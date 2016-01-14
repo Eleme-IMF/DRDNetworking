@@ -1,5 +1,4 @@
 # DurandalNetworking
-
 [![CI Status](http://img.shields.io/travis/cendywang/DurandalNetworking.svg?style=flat)](https://travis-ci.org/cendywang/DurandalNetworking)
 [![Version](https://img.shields.io/cocoapods/v/DurandalNetworking.svg?style=flat)](http://cocoapods.org/pods/DurandalNetworking)
 [![License](https://img.shields.io/cocoapods/l/DurandalNetworking.svg?style=flat)](http://cocoapods.org/pods/DurandalNetworking)
