@@ -31,6 +31,7 @@ static NSString *jsonRPCUrl = @"http://www.raboof.com/projects/jayrock/demo.ashx
 @implementation DRDJSONRPCTest
 
 - (void)testJsonRpcNumber {
+    sleep(5);
     XCTestExpectation *expectation = [self expectationWithDescription:@"testJSONRPCNumber"];
 
     DRDGeneralAPI *generalAPI = [[DRDGeneralAPI alloc]init];
@@ -58,6 +59,8 @@ static NSString *jsonRPCUrl = @"http://www.raboof.com/projects/jayrock/demo.ashx
 }
 
 - (void)testJsonRpcArray {
+    sleep(5);
+
     XCTestExpectation *expectation = [self expectationWithDescription:@"testJSONRPCArray"];
     
     DRDGeneralAPI *generalAPI           = [[DRDGeneralAPI alloc]init];
@@ -79,6 +82,8 @@ static NSString *jsonRPCUrl = @"http://www.raboof.com/projects/jayrock/demo.ashx
 }
 
 - (void)testJsonRpcThrowError {
+    sleep(5);
+
     XCTestExpectation *expectation = [self expectationWithDescription:@"testJSONRPCError"];
     
     DRDGeneralAPI *generalAPI = [[DRDGeneralAPI alloc]init];
@@ -100,6 +105,8 @@ static NSString *jsonRPCUrl = @"http://www.raboof.com/projects/jayrock/demo.ashx
 }
 
 - (void)testJsonRpcJsonToModelConvert {
+    sleep(5);
+
     XCTestExpectation *expectation = [self expectationWithDescription:@"testJSONRPCJsonToModelConvert"];
     
     DRDGeneralAPI *generalAPI = [[DRDGeneralAPI alloc]init];
