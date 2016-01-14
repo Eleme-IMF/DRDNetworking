@@ -29,7 +29,7 @@ static NSString *jsonRPCUrl = @"http://www.raboof.com/projects/jayrock/demo.ashx
 @end
 
 @implementation DRDJSONRPCTest
-
+#if 0
 - (void)testJsonRpcNumber {
     sleep(5);
     XCTestExpectation *expectation = [self expectationWithDescription:@"testJSONRPCNumber"];
@@ -147,5 +147,5 @@ static NSString *jsonRPCUrl = @"http://www.raboof.com/projects/jayrock/demo.ashx
     [generalAPI start];
     [self waitForExpectationsWithTimeout:normalTimeout handler:nil];
 }
-
+#endif
 @end
