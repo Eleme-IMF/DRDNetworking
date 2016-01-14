@@ -7,10 +7,13 @@ osx_image: xcode7.2
 language: objective-c
 # cache: cocoapods
 # podfile: Example/Podfile
-# before_install:
+before_install:
+- sudo pip install codecov
 # - brew update
 # - brew install xctool
 script:
 - xctool -workspace Example/DurandalNetworking.xcworkspace -scheme DurandalNetworking-Example -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
 - xctool test -workspace Example/DurandalNetworking.xcworkspace -scheme DurandalNetworking_Tests -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
 - pod lib lint
+after_success:
+- codecov
