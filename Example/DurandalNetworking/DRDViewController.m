@@ -90,25 +90,12 @@
         
     }];
     [apiPost setApiProgressBlock:^(NSProgress * progress) {
-        [progress addObserver:self
-                   forKeyPath:@"fractionCompleted"
-                      options:NSKeyValueObservingOptionNew
-                      context:NULL];
-    }];
-    [apiPost start];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary<NSString *,id> *)change
-                       context:(void *)context {
-    if ([keyPath isEqualToString:@"fractionCompleted"]) {
-        NSProgress *progress = object;
         __weak typeof(self) weakSelf = self;
-        dispatch_async(dispatch_get_main_queue(), ^{    
+        dispatch_async(dispatch_get_main_queue(), ^{
             weakSelf.label.text = [NSString stringWithFormat:@"上传进度: %f", progress.fractionCompleted];
         });
-    }
+    }];
+    [apiPost start];
 }
 
 - (IBAction)batchSendBtnClicked:(UIButton *)sender {

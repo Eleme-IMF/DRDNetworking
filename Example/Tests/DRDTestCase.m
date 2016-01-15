@@ -12,7 +12,7 @@
 #import <Expecta/Expecta.h>
 
 NSString * const DRDNetworkingTestsBaseURLString = @"http://httpbin.org/";
-NSUInteger normalTimeout = 15;
+NSUInteger normalTimeout = 30;
 
 @implementation DRDTestCase
 

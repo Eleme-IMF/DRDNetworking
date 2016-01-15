@@ -100,10 +100,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) void (^apiCompletionHandler)(_Nonnull id responseObject,  NSError * _Nullable error);
 
 /**
- *  api 上传等长时间执行的Progress进度
+ *  api 上传、下载等长时间执行的Progress进度
  *  NSProgress: 进度
  */
-@property (nonatomic, copy, nullable) void (^apiProgressBlock)( NSProgress * _Nullable );
+@property (nonatomic, copy, nullable) void (^apiProgressBlock)( NSProgress * _Nullable progress);
 
 /**
  *  一般用来进行JSON -> Model 数据的转换工作

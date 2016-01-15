@@ -323,6 +323,15 @@ static NSInteger const sessionManagerCountLimit = 50;
         }
     };
     
+    void (^apiProgressBlock)(NSProgress *progress)
+    = api.apiProgressBlock ?
+    ^(NSProgress *progress) {
+        if (progress.totalUnitCount <= 0) {
+            return;
+        }
+        api.apiProgressBlock(progress);
+    } : nil;
+    
     [api apiRequestWillBeSent];
     if (self.configuration.isNetworkingActivityIndicatorEnabled) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
@@ -332,7 +341,7 @@ static NSInteger const sessionManagerCountLimit = 50;
         {
             [sessionManager GET:requestUrlStr
                      parameters:requestParams
-                       progress:api.apiProgressBlock
+                       progress:apiProgressBlock
                         success:successBlock
                         failure:failureBlock];
         }
@@ -369,7 +378,7 @@ static NSInteger const sessionManagerCountLimit = 50;
             if (![api apiRequestConstructingBodyBlock]) {
                 [sessionManager POST:requestUrlStr
                           parameters:requestParams
-                            progress:api.apiProgressBlock
+                            progress:apiProgressBlock
                              success:successBlock
                              failure:failureBlock];
             } else {
@@ -377,14 +386,6 @@ static NSInteger const sessionManagerCountLimit = 50;
                 = ^(id <AFMultipartFormData> formData) {
                     api.apiRequestConstructingBodyBlock((id<DRDMultipartFormData>)formData);
                 };
-                void (^apiProgressBlock)(NSProgress *progress)
-                = api.apiProgressBlock ?
-                ^(NSProgress *progress) {
-                    if (progress.totalUnitCount <= 0) {
-                        return;
-                    }
-                    api.apiProgressBlock(progress);
-                } : nil;
                 
                 [sessionManager POST:requestUrlStr
                           parameters:requestParams
@@ -398,7 +399,7 @@ static NSInteger const sessionManagerCountLimit = 50;
         default:
             [sessionManager GET:requestUrlStr
                      parameters:requestParams
-                       progress:api.apiProgressBlock
+                       progress:apiProgressBlock
                         success:successBlock
                         failure:failureBlock];
             break;
