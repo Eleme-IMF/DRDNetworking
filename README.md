@@ -4,31 +4,59 @@
 [![License](https://img.shields.io/cocoapods/l/DurandalNetworking.svg?style=flat)](http://cocoapods.org/pods/DurandalNetworking)
 [![Platform](https://img.shields.io/cocoapods/p/DurandalNetworking.svg?style=flat)](http://cocoapods.org/pods/DurandalNetworking)
 
-DurandalNetworking is a delightful networking library which provide you a convenient way to handle API request, it has no invasion to your project, you won't get into trouble when you remove it one day, even though that's not what I want to see. Currently, we are using AFNetworking Session Manager. However, we have decoupled with AFNetworking, so you never mind have a dependence on AFNetworking.
-
-In DurandalNetworking, documentation and example is complete. You won't have any obstacles in use. 
-Last, but not least, a man's power is always limited. Join us, enpower DurandalNetworking!
+DurandalNetworking is a delightful networking library which provide you a convenient way to handle API request, it has no invasion to your project, you won't get into trouble when you remove it one day, even though that's not what I want to see. Currently, we are using AFNetworking 3.0.0+ with Session Manager.  
+DurandalNetworking compatible with `RESTFUL API` and `JSON-RPC API`. If you needs to support with your own `JSON Based RPC Call`, just a few lines of code needed!  
+More detail, please run the Example project in the repo.
 
 ## Usage
+---------
+## Installation
 
+DurandalNetworking is available through [CocoaPods](http://cocoapods.org). To install
+it, simply add the following line to your Podfile:
+
+```ruby
+pod "DurandalNetworking"
+```
+### Run Example
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
-### DRDAPIManager
+### Quick Start
+* In your podfile, just add `pod 'DurandalNetworking`, then `pod update`.
+* In your project file where you want to use DurandalNetworking, add `#import "DurandalNetworking.h"`
+* Write api code to run a networking call:
+
+```
+DRDGeneralAPI *apiGet = [[DRDGeneralAPI alloc] init];
+apiGet.baseUrl        = @"http://ele.me";
+[apiGet setApiCompletionHandler:^(id responseObject, NSError * error) {
+    // Your handle code
+}];
+[apiGet start];
+ ```  
+  
+### CodeDetail
+--------------
+
+###### DRDAPIManager
 
 `DRDAPIManager` manages `DRDBaseAPI` object,  which conforms to `<DRDAPI>`protocol. You can send an API request or a batch of API requests. Furthermore, you can cancel an API request which you sent before.
 
-#### config
-```objective-c
+###### DRDConfig  
+`DRDConfig` is a global class that help us to maintain the whole behaviors.  
 
+```
     DRDConfig *networkConfig   = [[DRDConfig alloc] init];
     networkConfig.baseUrlStr   = @"https://httpbin.org";
     networkConfig.userAgent    = @"For example User-Agent";
 
     [[DRDAPIManager sharedDRDAPIManager] setConfiguration:networkConfig];
-```
-#### send a batch of API requests
-```objective-c
+```    
+###### DRDAPIBatchAPIRequests      
 
+If you need to send a batch of api simultaneously, use `DRDAPIBatchAPIRequests`
+
+```
     DRDGeneralAPI *generalAPIGet = [[DRDGeneralAPI alloc] init];
     generalAPIGet.apiRequestMethodType = DRDRequestMethodTypeGET;
     generalAPIGet.baseUrl = self.baseURLStr;
@@ -43,12 +71,12 @@ To run the example project, clone the repo, and run `pod install` from the Examp
     
     [[DRDAPIManager sharedDRDAPIManager] sendBatchAPIRequests:batchRequests];
 ```
-### DRDBaseAPI
+
+###### DRDBaseAPI
 
 `DRDBaseAPI` is base class of all API request object. You will customize your API request by subclass of it.
 
-```objective-c
-
+```
 @implementation DRDAPIPostCall
 
 #pragma mark - init
@@ -82,11 +110,11 @@ To run the example project, clone the repo, and run `pod install` from the Examp
     return responseObject;
 }
 ```
-### DRDGeneralAPI
+######  DRDGeneralAPI
 
 `DRDGeneralAPI` avoid subclass of `DRDBaseAPI` which will lead to class explosion. It provide you a convenient way to send API request. 
 
-```objective-c
+```
     DRDGeneralAPI *apiGeGet            = [[DRDGeneralAPI alloc] initWithRequestMethod:@"get"];
     apiGeGet.apiRequestMethodType      = DRDRequestMethodTypeGET;
     apiGeGet.apiRequestSerializerType  = DRDRequestSerializerTypeHTTP;
@@ -100,11 +128,11 @@ To run the example project, clone the repo, and run `pod install` from the Examp
     [apiGeGet start];
 ```
 
-### DRDRPCProtocol
+###### DRDRPCProtocol
+`DRDRPCProtocol` is the way that where you could implements your custome `JSON Based RPC Protocol`. We already implemented `JSON-RPC protocol` in the Example.   
+Review it, and write your own protocol.
 
-`DRDRPCProtocol` defines JSON-RPC protocol, if remote service confrom JSON-RPC protocol, you can implement it.
-
-```objective-c
+```
     DRDGeneralAPI *plusAPI = [[DRDGeneralAPI alloc]init];
     plusAPI.baseUrl        = @"http://www.raboof.com/projects/jayrock/demo.ashx?test";
     plusAPI.requestMethod  = @"add";
@@ -129,21 +157,13 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 ```
 
 ## Requirements
-* ios 7.0+  
+* iOS 7.0+  
+* Objective-C 2.0
 * AFNetworking 3.0.1+  
   
 ## ChangeLog
 ### v0.4.0
 * Project Init
-
-## Installation
-
-DurandalNetworking is available through [CocoaPods](http://cocoapods.org). To install
-it, simply add the following line to your Podfile:
-
-```ruby
-pod "DurandalNetworking"
-```
 
 ## Author
 
