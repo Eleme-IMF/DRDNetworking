@@ -13,4 +13,7 @@ language: objective-c
 # - brew install xctool
 script:
 - xctool -workspace Example/DurandalNetworking.xcworkspace -scheme DurandalNetworking-Example -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
-- xctool test -workspace Example/DurandalNetworking.xcworkspace -scheme DurandalNetworking_Tests -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
+- xctool test -workspace Example/DurandalNetworking.xcworkspace -scheme DurandalNetworking_Tests -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
+
+after_success:
+- bash <(curl -s https://codecov.io/bash)
