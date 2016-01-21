@@ -13,17 +13,17 @@
 #import "DRDRPCProtocol.h"
 #import "DRDAPIBatchAPIRequests.h"
 #import <libkern/OSAtomic.h>
+#import <pthread.h>
 #import "DRDSecurityPolicy.h"
 
 
 static DRDAPIManager *sharedDRDAPIManager       = nil;
 static NSInteger const sessionManagerCountLimit = 50;
-
+static pthread_mutex_t sessionManagerLock = PTHREAD_MUTEX_INITIALIZER;
 
 @interface DRDAPIManager ()
 
 @property (nonatomic, strong) NSCache *sessionManagerCache;
-@property (nonatomic, assign) OSSpinLock sessionManagerLock;
 
 @end
 
@@ -42,7 +42,6 @@ static NSInteger const sessionManagerCountLimit = 50;
     if (!sharedDRDAPIManager) {
         sharedDRDAPIManager                    = [super init];
         sharedDRDAPIManager.configuration      = [[DRDConfig alloc]init];
-        sharedDRDAPIManager.sessionManagerLock = OS_SPINLOCK_INIT;
     }
     return sharedDRDAPIManager;
 }
@@ -154,9 +153,9 @@ static NSInteger const sessionManagerCountLimit = 50;
     sessionManager.responseSerializer    = responseSerializer;
     sessionManager.securityPolicy        = [self securityPolicyWithAPI:api];
     
-    OSSpinLockLock(&_sessionManagerLock);
+    pthread_mutex_lock(&sessionManagerLock);
     [self.sessionManagerCache setObject:sessionManager forKey:api];
-    OSSpinLockUnlock(&_sessionManagerLock);
+    pthread_mutex_unlock(&sessionManagerLock);
     
     return sessionManager;
 }
@@ -296,11 +295,11 @@ static NSInteger const sessionManagerCountLimit = 50;
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         }
         [stongSelf handleSuccWithResponse:responseObject andAPI:api];
-        OSSpinLockLock(&_sessionManagerLock);
+        pthread_mutex_lock(&sessionManagerLock);
         if ([stongSelf.sessionManagerCache objectForKey:api]) {
             [stongSelf.sessionManagerCache removeObjectForKey:api];
         }
-        OSSpinLockUnlock(&_sessionManagerLock);
+        pthread_mutex_unlock(&sessionManagerLock);
         if (completionGroup) {
             dispatch_group_leave(completionGroup);
         }
@@ -313,11 +312,11 @@ static NSInteger const sessionManagerCountLimit = 50;
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         }
         [stongSelf handleFailureWithError:error andAPI:api];
-        OSSpinLockLock(&_sessionManagerLock);
+        pthread_mutex_lock(&sessionManagerLock);
         if ([stongSelf.sessionManagerCache objectForKey:api]) {
             [stongSelf.sessionManagerCache removeObjectForKey:api];
         }
-        OSSpinLockUnlock(&_sessionManagerLock);
+        pthread_mutex_unlock(&sessionManagerLock);
         if (completionGroup) {
             dispatch_group_leave(completionGroup);
         }
@@ -409,14 +408,14 @@ static NSInteger const sessionManagerCountLimit = 50;
 }
 
 - (void)cancelAPIRequest:(nonnull DRDBaseAPI<DRDAPI> *)api {
-    OSSpinLockLock(&_sessionManagerLock);
+    pthread_mutex_lock(&sessionManagerLock);
     AFURLSessionManager *sessionManager = [self.sessionManagerCache objectForKey:api];
     if (sessionManager) {
         NSURLSessionTask *dataTask = [[sessionManager dataTasks] firstObject];
         [dataTask cancel];
         [self.sessionManagerCache removeObjectForKey:api];
     }
-    OSSpinLockUnlock(&_sessionManagerLock);
+    pthread_mutex_unlock(&sessionManagerLock);
 }
 
 @end
