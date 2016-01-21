@@ -29,7 +29,7 @@ static NSString *jsonRPCUrl = @"http://www.raboof.com/projects/jayrock/demo.ashx
 @end
 
 @implementation DRDJSONRPCTest
-#if 0
+
 - (void)testJsonRpcNumber {
     sleep(5);
     XCTestExpectation *expectation = [self expectationWithDescription:@"testJSONRPCNumber"];
@@ -55,7 +55,7 @@ static NSString *jsonRPCUrl = @"http://www.raboof.com/projects/jayrock/demo.ashx
         }
     }];
     [generalAPI start];
-    [self waitForExpectationsWithTimeout:normalTimeout handler:nil];
+    [self waitForExpectationsWithTimeout:normalTimeout * 2 handler:nil];
 }
 
 - (void)testJsonRpcArray {
@@ -78,7 +78,7 @@ static NSString *jsonRPCUrl = @"http://www.raboof.com/projects/jayrock/demo.ashx
         [expectation fulfill];
     }];
     [generalAPI start];
-    [self waitForExpectationsWithTimeout:normalTimeout handler:nil];
+    [self waitForExpectationsWithTimeout:normalTimeout * 2 handler:nil];
 }
 
 - (void)testJsonRpcThrowError {
@@ -101,7 +101,7 @@ static NSString *jsonRPCUrl = @"http://www.raboof.com/projects/jayrock/demo.ashx
         [expectation fulfill];
     }];
     [generalAPI start];
-    [self waitForExpectationsWithTimeout:normalTimeout handler:nil];
+    [self waitForExpectationsWithTimeout:normalTimeout * 2 handler:nil];
 }
 
 - (void)testJsonRpcJsonToModelConvert {
@@ -145,7 +145,7 @@ static NSString *jsonRPCUrl = @"http://www.raboof.com/projects/jayrock/demo.ashx
         [expectation fulfill];
     }];
     [generalAPI start];
-    [self waitForExpectationsWithTimeout:normalTimeout handler:nil];
+    [self waitForExpectationsWithTimeout:normalTimeout * 2 handler:nil];
 }
-#endif
+
 @end
