@@ -405,6 +405,7 @@ static NSInteger const sessionManagerCountLimit = 50;
             break;
     }
     [api apiRequestDidSent];
+    [sessionManager.session finishTasksAndInvalidate];
 }
 
 - (void)cancelAPIRequest:(nonnull DRDBaseAPI<DRDAPI> *)api {
