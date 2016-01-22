@@ -12,14 +12,23 @@
 #import "DRDConfig.h"
 #import "DRDRPCProtocol.h"
 #import "DRDAPIBatchAPIRequests.h"
-#import <libkern/OSAtomic.h>
 #import <pthread.h>
 #import "DRDSecurityPolicy.h"
 
 
 static DRDAPIManager *sharedDRDAPIManager       = nil;
 static NSInteger const sessionManagerCountLimit = 50;
-static pthread_mutex_t sessionManagerLock = PTHREAD_MUTEX_INITIALIZER;
+
+/**
+ *  Workaround for OSSpinLock is not safe in iOS, OSSpinLock is unsafe unless you can guarantee
+ *  that all users have the same priority. To compensate, pthread mutexes are 2-2.5x faster than
+ *  they used to be on new iOSs.
+ *  Apple has changed it to pthread_mutex in CoreFoundation.
+ *  See https://github.com/ReactiveCocoa/ReactiveCocoa/issues/2619
+ *  https://lists.swift.org/pipermail/swift-dev/Week-of-Mon-20151214/000344.html
+ *  http://engineering.postmates.com/Spinlocks-Considered-Harmful-On-iOS/
+ */
+static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
 
 @interface DRDAPIManager ()
 
