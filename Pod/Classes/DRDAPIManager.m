@@ -244,14 +244,14 @@ static pthread_mutex_t sessionManagerLock = PTHREAD_MUTEX_INITIALIZER;
     [apis.apiRequestsSet enumerateObjectsUsingBlock:^(id api, BOOL * stop) {
         dispatch_group_enter(batch_api_group);
         
-        __strong typeof (weakSelf) stongSelf = weakSelf;
-        AFHTTPSessionManager *sessionManager = [stongSelf sessionManagerWithAPI:api];
+        __strong typeof (weakSelf) strongSelf = weakSelf;
+        AFHTTPSessionManager *sessionManager = [strongSelf sessionManagerWithAPI:api];
         if (!sessionManager) {
             *stop = YES;
         }
         sessionManager.completionGroup = batch_api_group;
         
-        [stongSelf _sendSingleAPIRequest:api
+        [strongSelf _sendSingleAPIRequest:api
                        withSessioNanager:sessionManager
                       andCompletionGroup:batch_api_group];
     }];
@@ -290,14 +290,14 @@ static pthread_mutex_t sessionManagerLock = PTHREAD_MUTEX_INITIALIZER;
     
     void (^successBlock)(NSURLSessionDataTask *task, id responseObject)
     = ^(NSURLSessionDataTask * task, id responseObject) {
-        __strong typeof (weakSelf) stongSelf = weakSelf;
-        if (stongSelf.configuration.isNetworkingActivityIndicatorEnabled) {
+        __strong typeof (weakSelf) strongSelf = weakSelf;
+        if (strongSelf.configuration.isNetworkingActivityIndicatorEnabled) {
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         }
-        [stongSelf handleSuccWithResponse:responseObject andAPI:api];
+        [strongSelf handleSuccWithResponse:responseObject andAPI:api];
         pthread_mutex_lock(&sessionManagerLock);
-        if ([stongSelf.sessionManagerCache objectForKey:api]) {
-            [stongSelf.sessionManagerCache removeObjectForKey:api];
+        if ([strongSelf.sessionManagerCache objectForKey:api]) {
+            [strongSelf.sessionManagerCache removeObjectForKey:api];
         }
         pthread_mutex_unlock(&sessionManagerLock);
         if (completionGroup) {
@@ -307,14 +307,14 @@ static pthread_mutex_t sessionManagerLock = PTHREAD_MUTEX_INITIALIZER;
     
     void (^failureBlock)(NSURLSessionDataTask * task, NSError * error)
     = ^(NSURLSessionDataTask * task, NSError * error) {
-        __strong typeof (weakSelf) stongSelf = weakSelf;
-        if (stongSelf.configuration.isNetworkingActivityIndicatorEnabled) {
+        __strong typeof (weakSelf) strongSelf = weakSelf;
+        if (strongSelf.configuration.isNetworkingActivityIndicatorEnabled) {
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         }
-        [stongSelf handleFailureWithError:error andAPI:api];
+        [strongSelf handleFailureWithError:error andAPI:api];
         pthread_mutex_lock(&sessionManagerLock);
-        if ([stongSelf.sessionManagerCache objectForKey:api]) {
-            [stongSelf.sessionManagerCache removeObjectForKey:api];
+        if ([strongSelf.sessionManagerCache objectForKey:api]) {
+            [strongSelf.sessionManagerCache removeObjectForKey:api];
         }
         pthread_mutex_unlock(&sessionManagerLock);
         if (completionGroup) {
