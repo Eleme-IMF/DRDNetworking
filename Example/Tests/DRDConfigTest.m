@@ -7,9 +7,9 @@
 //
 
 #import "DRDTestCase.h"
-#import <DurandalNetworking/DRDGeneralAPI.h>
-#import <DurandalNetworking/DRDAPIManager.h>
-#import <DurandalNetworking/DRDConfig.h>
+#import <DRDGeneralAPI.h>
+#import <DRDAPIManager.h>
+#import <DRDConfig.h>
 
 @interface DRDConfigTest : DRDTestCase
 

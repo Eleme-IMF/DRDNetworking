@@ -7,10 +7,10 @@
 //
 
 #import "DRDTestCase.h"
-#import <DurandalNetworking/DRDAPIBatchAPIRequests.h>
-#import <DurandalNetworking/DRDGeneralAPI.h>
-#import <DurandalNetworking/DRDAPIManager.h>
-#import <DurandalNetworking/DRDConfig.h>
+#import <DRDAPIBatchAPIRequests.h>
+#import <DRDGeneralAPI.h>
+#import <DRDAPIManager.h>
+#import <DRDConfig.h>
 #import "AFNetworking.h"
 #import <Specta/Specta.h>
 #import <Expecta/Expecta.h>

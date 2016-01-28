@@ -8,9 +8,9 @@
 
 #import "DRDTestCase.h"
 #import <OCMock.h>
-#import <DurandalNetworking/DRDGeneralAPI.h>
-#import <DurandalNetworking/DRDAPIManager.h>
-#import <DurandalNetworking/DRDAPIBatchAPIRequests.h>
+#import <DRDGeneralAPI.h>
+#import <DRDAPIManager.h>
+#import <DRDAPIBatchAPIRequests.h>
 #import <AFNetworking.h>
 
 @interface DRDAPIManager (UnitTesting)
