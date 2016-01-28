@@ -175,6 +175,9 @@ Review it, and write your own protocol.
 
 cendywang, cendymails@gmail.com
 
+## Contributor
+Alex Ao, aozhimin0811@gmail.com
+
 ## License
 
 DRDNetworking is available under the MIT license. See the LICENSE file for more info.
