@@ -11,6 +11,13 @@
 #import <DRDAPIManager.h>
 #import <DRDConfig.h>
 
+@interface DRDAPIManager (UnitTesting)
+
+- (NSString *)requestUrlStringWithAPI:(DRDBaseAPI  *)api;
+- (NSString *)requestBaseUrlStringWithAPI:(DRDBaseAPI  *)api;
+
+@end
+
 @interface DRDConfigTest : DRDTestCase
 
 @end
@@ -41,7 +48,7 @@
 }
 
 - (void)testBaseUrl {
-    NSString *baseUrlStr = @"http://www.ele.me/";
+    NSString *baseUrlStr = @"http://www.ele.me/hello";
     
     DRDConfig *configuration = [[DRDConfig alloc] init];
     configuration.baseUrlStr = baseUrlStr;
@@ -53,7 +60,11 @@
     api.apiResponseSerializerType = DRDResponseSerializerTypeJSON;
     __weak DRDGeneralAPI *weakAPI = api;
     api.apiRequestDidSentBlock = ^{
-        XCTAssert([weakAPI.baseUrl isEqualToString:baseUrlStr]);
+        XCTAssert(weakAPI.baseUrl == nil);
+        XCTAssert([[[DRDAPIManager sharedDRDAPIManager] requestBaseUrlStringWithAPI:weakAPI]
+                   isEqualToString:@"http://www.ele.me/"]);
+        XCTAssert([[[DRDAPIManager sharedDRDAPIManager] requestUrlStringWithAPI:weakAPI]
+                   isEqualToString:@"hello"]);
     };
     [api start];
 }

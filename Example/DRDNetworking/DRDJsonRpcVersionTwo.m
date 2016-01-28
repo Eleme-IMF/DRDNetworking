@@ -13,10 +13,6 @@ static DRDJsonRpcVersionTwo *sharedInstance = nil;
 
 @implementation DRDJsonRpcVersionTwo
 
-//- (nullable instancetype)init {
-//    return nil;
-//}
-
 + (instancetype)sharedJsonRpcVersionTwo {
     if (!sharedInstance) {
         static dispatch_once_t onceToken;
@@ -28,7 +24,7 @@ static DRDJsonRpcVersionTwo *sharedInstance = nil;
 }
 
 #pragma mark - Protocol RPC
-- (NSString *)rpcRequestUrlWithAPI:(DRDBaseAPI<DRDAPI>*)api {
+- (NSString *)rpcRequestUrlWithAPI:(DRDBaseAPI *)api {
     if (api.customRequestUrl) {
         return api.customRequestUrl;
     } else {
@@ -36,7 +32,7 @@ static DRDJsonRpcVersionTwo *sharedInstance = nil;
     }
 }
 
-- (id)rpcRequestParamsWithAPI:(DRDBaseAPI<DRDAPI>*)api {
+- (id)rpcRequestParamsWithAPI:(DRDBaseAPI *)api {
     NSMutableDictionary *dic = [NSMutableDictionary dictionary];
     dic[@"jsonrpc"]          = @"2.0";
     dic[@"id"]   = [[[NSUUID UUID] UUIDString] lowercaseString];
@@ -75,7 +71,7 @@ static DRDJsonRpcVersionTwo *sharedInstance = nil;
     return [((NSDictionary *)formattedResponseObj) objectForKey:@"result"];
 }
 
-// 如果需要对某些错误进行统一处理，可以继承后覆盖本方法
+// 如果需要对某些错误进行统一处理，可以在本方法中进行处理
 - (NSError *)rpcErrorWithFormattedResponse:(id)formattedResponseObj {
     id errorInfo = [((NSDictionary *)formattedResponseObj) objectForKey:@"error"];
     if (errorInfo && ![errorInfo isEqual:[NSNull null]]) {

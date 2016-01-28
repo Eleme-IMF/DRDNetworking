@@ -17,22 +17,11 @@
 
 
 static DRDAPIManager *sharedDRDAPIManager       = nil;
-static NSInteger const sessionManagerCountLimit = 50;
-
-/**
- *  Workaround for OSSpinLock is not safe in iOS, OSSpinLock is unsafe unless you can guarantee
- *  that all users have the same priority. To compensate, pthread mutexes are 2-2.5x faster than
- *  they used to be on new iOSs.
- *  Apple has changed it to pthread_mutex in CoreFoundation.
- *  See https://github.com/ReactiveCocoa/ReactiveCocoa/issues/2619
- *  https://lists.swift.org/pipermail/swift-dev/Week-of-Mon-20151214/000344.html
- *  http://engineering.postmates.com/Spinlocks-Considered-Harmful-On-iOS/
- */
-static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
 
 @interface DRDAPIManager ()
 
 @property (nonatomic, strong) NSCache *sessionManagerCache;
+@property (nonatomic, strong) NSCache *sessionTasksCache;
 
 @end
 
@@ -58,13 +47,19 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
 - (NSCache *)sessionManagerCache {
     if (!_sessionManagerCache) {
         _sessionManagerCache = [[NSCache alloc] init];
-        _sessionManagerCache.countLimit = sessionManagerCountLimit;
     }
     return _sessionManagerCache;
 }
 
+- (NSCache *)sessionTasksCache {
+    if (!_sessionTasksCache) {
+        _sessionTasksCache = [[NSCache alloc] init];
+    }
+    return _sessionTasksCache;
+}
+
 #pragma mark - Serializer
-- (AFHTTPRequestSerializer *)requestSerializerForAPI:(DRDBaseAPI<DRDAPI> *)api withRequestUrlStr:(NSString *)requestUrlStr {
+- (AFHTTPRequestSerializer *)requestSerializerForAPI:(DRDBaseAPI *)api {
     NSParameterAssert(api);
     __weak typeof(self) weakSelf = self;
     
@@ -77,7 +72,9 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
     
     requestSerializer.cachePolicy          = [api apiRequestCachePolicy];
     requestSerializer.timeoutInterval      = [api apiRequestTimeoutInterval];
-    NSDictionary *requestHeaderFieldParams = [api apiRequestHTTPHeaderField];
+    NSDictionary *requestHeaderFieldParams = api.apiHttpHeaderDelegate
+                                            ? [api.apiHttpHeaderDelegate apiRequestHTTPHeaderField]
+                                            : [api apiRequestHTTPHeaderField];
     if (![[requestHeaderFieldParams allKeys] containsObject:@"User-Agent"] &&
         self.configuration.userAgent) {
         [requestSerializer setValue:self.configuration.userAgent forHTTPHeaderField:@"User-Agent"];
@@ -98,7 +95,7 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
     return requestSerializer;
 }
 
-- (AFHTTPResponseSerializer *)responseSerializerForAPI:(DRDBaseAPI<DRDAPI> *)api {
+- (AFHTTPResponseSerializer *)responseSerializerForAPI:(DRDBaseAPI *)api {
     NSParameterAssert(api);
     AFHTTPResponseSerializer *responseSerializer;
     if ([api apiResponseSerializerType] == DRDResponseSerializerTypeHTTP) {
@@ -111,28 +108,56 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
 }
 
 #pragma mark - Request Invoke Organize
-// Request Url
-- (NSString *)requestUrlStringWithAPI:(DRDBaseAPI<DRDAPI> *)api {
+- (NSString *)requestBaseUrlStringWithAPI:(DRDBaseAPI *)api {
     NSParameterAssert(api);
     
     // 如果定义了自定义的RequestUrl, 则直接定义RequestUrl
     if ([api customRequestUrl]) {
-        return [api customRequestUrl];
+        NSURL *url  = [NSURL URLWithString:[api customRequestUrl]];
+        NSURL *root = [NSURL URLWithString:@"/" relativeToURL:url];
+        return [NSString stringWithFormat:@"%@", root.absoluteString];
+    }
+    
+    NSAssert(api.baseUrl != nil || self.configuration.baseUrlStr != nil,
+             @"api baseURL or self.configuration.baseurl can't be nil together");
+    
+    NSString *baseUrl = api.baseUrl ? : self.configuration.baseUrlStr;
+    
+    // 在某些情况下，一些用户会直接把整个url地址写进 baseUrl
+    // 因此，还需要对baseUrl 进行一次切割
+    NSURL *url  = [NSURL URLWithString:baseUrl];
+    NSURL *root = [NSURL URLWithString:@"/" relativeToURL:url];
+    return [NSString stringWithFormat:@"%@", root.absoluteString];
+}
+
+// Request Url
+- (NSString *)requestUrlStringWithAPI:(DRDBaseAPI *)api {
+    NSParameterAssert(api);
+    
+    NSString *baseUrlStr = [self requestBaseUrlStringWithAPI:api];
+    // 如果定义了自定义的RequestUrl, 则直接定义RequestUrl
+    if ([api customRequestUrl]) {
+        return [[api customRequestUrl] stringByReplacingOccurrencesOfString:baseUrlStr
+                                                                 withString:@""];
     }
     NSAssert(api.baseUrl != nil || self.configuration.baseUrlStr != nil,
              @"api baseURL or self.configuration.baseurl can't be nil together");
-    if (!api.baseUrl && self.configuration.baseUrlStr) {
-        api.baseUrl = self.configuration.baseUrlStr;
-    }
+
     if (api.rpcDelegate) {
-        return [api.rpcDelegate rpcRequestUrlWithAPI:api];
+        NSString *rpcRequestUrlStr = [api.rpcDelegate rpcRequestUrlWithAPI:api];
+        return [rpcRequestUrlStr stringByReplacingOccurrencesOfString:baseUrlStr
+                                                           withString:@""];
     }
     // 如果啥都没定义，则使用BaseUrl + requestMethod 组成 UrlString
-    return [api.baseUrl stringByAppendingPathComponent:[api requestMethod]];
+    // 即，直接返回requestMethod
+    NSURL *url = [NSURL URLWithString:[api requestMethod] ? : @""
+                        relativeToURL:[NSURL URLWithString:[api baseUrl]? : self.configuration.baseUrlStr]];
+    return [url.absoluteString stringByReplacingOccurrencesOfString:baseUrlStr
+                                                         withString:@""];
 }
 
 // Request Protocol
-- (id)requestParamsWithAPI:(DRDBaseAPI<DRDAPI>*)api {
+- (id)requestParamsWithAPI:(DRDBaseAPI *)api {
     NSParameterAssert(api);
     
     if (api.rpcDelegate) {
@@ -143,11 +168,9 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
 }
 
 #pragma mark - AFSessionManager
-- (AFHTTPSessionManager *)sessionManagerWithAPI:(DRDBaseAPI<DRDAPI>*)api {
+- (AFHTTPSessionManager *)sessionManagerWithAPI:(DRDBaseAPI *)api {
     NSParameterAssert(api);
-    NSString *requestUrlStr = [self requestUrlStringWithAPI:api];
-    AFHTTPRequestSerializer *requestSerializer = [self requestSerializerForAPI:api
-                                                             withRequestUrlStr:requestUrlStr];
+    AFHTTPRequestSerializer *requestSerializer = [self requestSerializerForAPI:api];
     if (!requestSerializer) {
         // Serializer Error, just return;
         return nil;
@@ -155,21 +178,36 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
     
     // Response Part
     AFHTTPResponseSerializer *responseSerializer = [self responseSerializerForAPI:api];
-    
+
+    NSString *baseUrlStr = [self requestBaseUrlStringWithAPI:api];
     // AFHTTPSession
-    AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *sessionManager;
+    sessionManager = [self.sessionManagerCache objectForKey:baseUrlStr];
+    if (!sessionManager) {
+        sessionManager = [self newSessionManagerWithBaseUrlStr:baseUrlStr];
+        [self.sessionManagerCache setObject:sessionManager forKey:baseUrlStr];
+    }
+    
+//    AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
     sessionManager.requestSerializer     = requestSerializer;
     sessionManager.responseSerializer    = responseSerializer;
     sessionManager.securityPolicy        = [self securityPolicyWithAPI:api];
     
-    pthread_mutex_lock(&sessionManagerLock);
-    [self.sessionManagerCache setObject:sessionManager forKey:api];
-    pthread_mutex_unlock(&sessionManagerLock);
-    
     return sessionManager;
 }
 
-- (AFSecurityPolicy *)securityPolicyWithAPI:(DRDBaseAPI<DRDAPI>*)api {
+- (AFHTTPSessionManager *)newSessionManagerWithBaseUrlStr:(NSString *)baseUrlStr {
+    NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+    if (self.configuration) {
+        sessionConfig.HTTPMaximumConnectionsPerHost = self.configuration.maxHttpConnectionPerHost;
+    } else {
+        sessionConfig.HTTPMaximumConnectionsPerHost = MAX_HTTP_CONNECTION_PER_HOST;
+    }
+    return [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:baseUrlStr]
+                                    sessionConfiguration:sessionConfig];
+}
+
+- (AFSecurityPolicy *)securityPolicyWithAPI:(DRDBaseAPI *)api {
     NSUInteger pinningMode                  = api.apiSecurityPolicy.SSLPinningMode;
     AFSecurityPolicy *securityPolicy        = [AFSecurityPolicy policyWithPinningMode:pinningMode];
     securityPolicy.allowInvalidCertificates = api.apiSecurityPolicy.allowInvalidCertificates;
@@ -178,7 +216,7 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
 }
 
 #pragma mark - Response Handle
-- (void)handleSuccWithResponse:(id)responseObject andAPI:(DRDBaseAPI<DRDAPI>*)api {
+- (void)handleSuccWithResponse:(id)responseObject andAPI:(DRDBaseAPI *)api {
     if (api.rpcDelegate) {
         id formattedResponseObj = [api.rpcDelegate rpcResponseObjReformer:responseObject];
         NSError *rpcError = [api.rpcDelegate rpcErrorWithFormattedResponse:formattedResponseObj];
@@ -193,7 +231,7 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
     }
 }
 
-- (void)handleFailureWithError:(NSError *)error andAPI:(DRDBaseAPI<DRDAPI>*)api {
+- (void)handleFailureWithError:(NSError *)error andAPI:(DRDBaseAPI *)api {
     // Error -999, representing API Cancelled
     if ([error.domain isEqualToString: NSURLErrorDomain] &&
         error.code == NSURLErrorCancelled) {
@@ -225,20 +263,10 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
     [self callAPICompletion:api obj:nil error:err];
 }
 
-- (void)callAPICompletion:(DRDBaseAPI<DRDAPI>*)api
+- (void)callAPICompletion:(DRDBaseAPI *)api
                       obj:(id)obj
                     error:(NSError *)error {
-    do {
-        if ([api respondsToSelector:@selector(apiResponseObjReformer:andError:)]) {
-            obj = [api apiResponseObjReformer:obj andError:error];
-            break;
-        }
-        if (api.apiResponseObjReformerBlock) {
-            obj = api.apiResponseObjReformerBlock(obj, error);
-            break;
-        }
-    }while (0);
-    
+    obj = [api apiResponseObjReformer:obj andError:error];
     if ([api apiCompletionHandler]) {
         api.apiCompletionHandler(obj, error);
     }
@@ -247,6 +275,9 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
 #pragma mark - Send Batch Requests
 - (void)sendBatchAPIRequests:(nonnull DRDAPIBatchAPIRequests *)apis {
     NSParameterAssert(apis);
+    
+    NSAssert([[apis.apiRequestsSet valueForKeyPath:@"hash"] count] == [apis.apiRequestsSet count],
+             @"Should not have same API");
     
     dispatch_group_t batch_api_group = dispatch_group_create();
     __weak typeof(self) weakSelf = self;
@@ -257,12 +288,13 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
         AFHTTPSessionManager *sessionManager = [strongSelf sessionManagerWithAPI:api];
         if (!sessionManager) {
             *stop = YES;
+            dispatch_group_leave(batch_api_group);
         }
         sessionManager.completionGroup = batch_api_group;
         
         [strongSelf _sendSingleAPIRequest:api
-                       withSessioNanager:sessionManager
-                      andCompletionGroup:batch_api_group];
+                       withSessionManager:sessionManager
+                       andCompletionGroup:batch_api_group];
     }];
     dispatch_group_notify(batch_api_group, dispatch_get_main_queue(), ^{
         if (apis.delegate) {
@@ -272,7 +304,7 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
 }
 
 #pragma mark - Send Request
-- (void)sendAPIRequest:(nonnull DRDBaseAPI<DRDAPI> *)api {
+- (void)sendAPIRequest:(nonnull DRDBaseAPI *)api {
     NSParameterAssert(api);
     NSAssert(self.configuration, @"Configuration Can not be nil");
     
@@ -280,15 +312,15 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
     if (!sessionManager) {
         return;
     }
-    [self _sendSingleAPIRequest:api withSessioNanager:sessionManager];
+    [self _sendSingleAPIRequest:api withSessionManager:sessionManager];
 }
 
-- (void)_sendSingleAPIRequest:(DRDBaseAPI<DRDAPI>*)api withSessioNanager:(AFHTTPSessionManager *)sessionManager {
-    [self _sendSingleAPIRequest:api withSessioNanager:sessionManager andCompletionGroup:nil];
+- (void)_sendSingleAPIRequest:(DRDBaseAPI *)api withSessionManager:(AFHTTPSessionManager *)sessionManager {
+    [self _sendSingleAPIRequest:api withSessionManager:sessionManager andCompletionGroup:nil];
 }
 
-- (void)_sendSingleAPIRequest:(DRDBaseAPI<DRDAPI>*)api
-            withSessioNanager:(AFHTTPSessionManager *)sessionManager
+- (void)_sendSingleAPIRequest:(DRDBaseAPI *)api
+           withSessionManager:(AFHTTPSessionManager *)sessionManager
            andCompletionGroup:(dispatch_group_t)completionGroup {
     NSParameterAssert(api);
     NSParameterAssert(sessionManager);
@@ -296,6 +328,7 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
     __weak typeof(self) weakSelf = self;
     NSString *requestUrlStr = [self requestUrlStringWithAPI:api];
     id requestParams        = [self requestParamsWithAPI:api];
+    NSString *hashKey       = [NSString stringWithFormat:@"%lu", (unsigned long)[api hash]];
     
     void (^successBlock)(NSURLSessionDataTask *task, id responseObject)
     = ^(NSURLSessionDataTask * task, id responseObject) {
@@ -304,11 +337,7 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         }
         [strongSelf handleSuccWithResponse:responseObject andAPI:api];
-        pthread_mutex_lock(&sessionManagerLock);
-        if ([strongSelf.sessionManagerCache objectForKey:api]) {
-            [strongSelf.sessionManagerCache removeObjectForKey:api];
-        }
-        pthread_mutex_unlock(&sessionManagerLock);
+        [self.sessionTasksCache removeObjectForKey:hashKey];
         if (completionGroup) {
             dispatch_group_leave(completionGroup);
         }
@@ -321,11 +350,7 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         }
         [strongSelf handleFailureWithError:error andAPI:api];
-        pthread_mutex_lock(&sessionManagerLock);
-        if ([strongSelf.sessionManagerCache objectForKey:api]) {
-            [strongSelf.sessionManagerCache removeObjectForKey:api];
-        }
-        pthread_mutex_unlock(&sessionManagerLock);
+        [self.sessionTasksCache removeObjectForKey:hashKey];
         if (completionGroup) {
             dispatch_group_leave(completionGroup);
         }
@@ -344,9 +369,11 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
     if (self.configuration.isNetworkingActivityIndicatorEnabled) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     }
+    NSURLSessionDataTask *dataTask;
     switch ([api apiRequestMethodType]) {
         case DRDRequestMethodTypeGET:
         {
+            dataTask =
             [sessionManager GET:requestUrlStr
                      parameters:requestParams
                        progress:apiProgressBlock
@@ -356,21 +383,25 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
             break;
         case DRDRequestMethodTypeDELETE:
         {
+            dataTask =
             [sessionManager DELETE:requestUrlStr parameters:requestParams success:successBlock failure:failureBlock];
         }
             break;
         case DRDRequestMethodTypePATCH:
         {
+            dataTask =
             [sessionManager PATCH:requestUrlStr parameters:requestParams success:successBlock failure:failureBlock];
         }
             break;
         case DRDRequestMethodTypePUT:
         {
+            dataTask =
             [sessionManager PUT:requestUrlStr parameters:requestParams success:successBlock failure:failureBlock];
         }
             break;
         case DRDRequestMethodTypeHEAD:
         {
+            dataTask =
             [sessionManager HEAD:requestUrlStr
                       parameters:requestParams
                          success:^(NSURLSessionDataTask * _Nonnull task) {
@@ -384,6 +415,7 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
         case DRDRequestMethodTypePOST:
         {
             if (![api apiRequestConstructingBodyBlock]) {
+                dataTask =
                 [sessionManager POST:requestUrlStr
                           parameters:requestParams
                             progress:apiProgressBlock
@@ -394,7 +426,7 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
                 = ^(id <AFMultipartFormData> formData) {
                     api.apiRequestConstructingBodyBlock((id<DRDMultipartFormData>)formData);
                 };
-                
+                dataTask =
                 [sessionManager POST:requestUrlStr
                           parameters:requestParams
            constructingBodyWithBlock:block
@@ -405,6 +437,7 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
         }
             break;
         default:
+            dataTask =
             [sessionManager GET:requestUrlStr
                      parameters:requestParams
                        progress:apiProgressBlock
@@ -412,19 +445,20 @@ static pthread_mutex_t sessionManagerLock       = PTHREAD_MUTEX_INITIALIZER;
                         failure:failureBlock];
             break;
     }
+    if (dataTask) {
+        [self.sessionTasksCache setObject:dataTask forKey:[NSString stringWithFormat:@"%lu", (unsigned long)[api hash]]];
+    }
+
     [api apiRequestDidSent];
-    [sessionManager.session finishTasksAndInvalidate];
 }
 
-- (void)cancelAPIRequest:(nonnull DRDBaseAPI<DRDAPI> *)api {
-    pthread_mutex_lock(&sessionManagerLock);
-    AFURLSessionManager *sessionManager = [self.sessionManagerCache objectForKey:api];
-    if (sessionManager) {
-        NSURLSessionTask *dataTask = [[sessionManager dataTasks] firstObject];
+- (void)cancelAPIRequest:(nonnull DRDBaseAPI *)api {
+    NSString *hashKey = [NSString stringWithFormat:@"%lu", (unsigned long)[api hash]];
+    NSURLSessionDataTask *dataTask = [self.sessionTasksCache objectForKey:hashKey];
+    [self.sessionTasksCache removeObjectForKey:hashKey];
+    if (dataTask) {
         [dataTask cancel];
-        [self.sessionManagerCache removeObjectForKey:api];
     }
-    pthread_mutex_unlock(&sessionManagerLock);
 }
 
 @end

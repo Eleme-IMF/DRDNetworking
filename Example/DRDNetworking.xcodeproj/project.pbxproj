@@ -35,6 +35,7 @@
 		F40883C91C5A048E00FB79F5 /* DRDConfigTest.m in Sources */ = {isa = PBXBuildFile; fileRef = F40883C11C5A048E00FB79F5 /* DRDConfigTest.m */; };
 		F40883CA1C5A048E00FB79F5 /* DRDJSONRPCTest.m in Sources */ = {isa = PBXBuildFile; fileRef = F40883C21C5A048E00FB79F5 /* DRDJSONRPCTest.m */; };
 		F40883CB1C5A048E00FB79F5 /* DRDTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = F40883C41C5A048E00FB79F5 /* DRDTestCase.m */; };
+		F40883CD1C5A07F700FB79F5 /* DRDSecurityPolicyTest.m in Sources */ = {isa = PBXBuildFile; fileRef = F40883CC1C5A07F700FB79F5 /* DRDSecurityPolicyTest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +96,7 @@
 		F40883C21C5A048E00FB79F5 /* DRDJSONRPCTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DRDJSONRPCTest.m; sourceTree = "<group>"; };
 		F40883C31C5A048E00FB79F5 /* DRDTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DRDTestCase.h; sourceTree = "<group>"; };
 		F40883C41C5A048E00FB79F5 /* DRDTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DRDTestCase.m; sourceTree = "<group>"; };
+		F40883CC1C5A07F700FB79F5 /* DRDSecurityPolicyTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DRDSecurityPolicyTest.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,6 +199,7 @@
 		6003F5B5195388D20070C39A /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				F40883CC1C5A07F700FB79F5 /* DRDSecurityPolicyTest.m */,
 				F40883BD1C5A048E00FB79F5 /* DRDAPIBatchRequestsTest.m */,
 				F40883BE1C5A048E00FB79F5 /* DRDAPIManagerTest.m */,
 				F40883BF1C5A048E00FB79F5 /* DRDAPITest.m */,
@@ -458,6 +461,7 @@
 				F40883C51C5A048E00FB79F5 /* DRDAPIBatchRequestsTest.m in Sources */,
 				F40883C61C5A048E00FB79F5 /* DRDAPIManagerTest.m in Sources */,
 				F40883C91C5A048E00FB79F5 /* DRDConfigTest.m in Sources */,
+				F40883CD1C5A07F700FB79F5 /* DRDSecurityPolicyTest.m in Sources */,
 				F40883CB1C5A048E00FB79F5 /* DRDTestCase.m in Sources */,
 				F40883C81C5A048E00FB79F5 /* DRDBaseAPITest.m in Sources */,
 				F40883C71C5A048E00FB79F5 /* DRDAPITest.m in Sources */,

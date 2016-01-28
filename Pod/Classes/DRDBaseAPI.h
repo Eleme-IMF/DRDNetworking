@@ -48,31 +48,9 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 #pragma mark -
+@protocol DRDHttpHeaderDelegate <NSObject>
 
-@protocol DRDAPI <NSObject>
-- (NSString *)requestMethod; // 主要用于JSON-RPC协议中的Method字段
-
-/**
- *  用户api请求中的参数列表
- *   如果JSON-RPC协议，则Parameters 放入JSON-RPC协议中
- *   如果非JSON-RPC协议，则requestParameters 会作为url的一部分发送给服务器
- *
- *  @return 一般来说是NSDictionary
- */
-- (nullable id)requestParameters;
-
-@optional
-/**
- *  一般用来进行JSON -> Model 数据的转换工作
- *   返回的id，如果没有error，则为转换成功后的Model数据；
- *    如果有error， 则直接返回传参中的responseObject
- *
- *  @param responseObject 请求的返回
- *  @param error          请求的错误
- *
- *  @return 整理过后的请求数据
- */
-- (nullable id)apiResponseObjReformer:(id)responseObject andError:(NSError * _Nullable)error;
+- (nullable NSDictionary *)apiRequestHTTPHeaderField;
 
 @end
 
@@ -106,26 +84,31 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) void (^apiProgressBlock)( NSProgress * _Nullable progress);
 
 /**
- *  一般用来进行JSON -> Model 数据的转换工作
- *   返回的id，如果没有error，则为转换成功后的Model数据；
- *    如果有error， 则直接返回传参中的responseObject
- *  
- *  注意：
- *   这里与DRDAPI Protocol中的apiResponseObjReformer 有重合。
- *   这里的block 主要给 DRDGeneralAPI 使用
- *
- *  @param responseObject 请求的返回
- *  @param error          请求的错误
- *
- *  @return 整理过后的请求数据
- */
-@property (nonatomic, copy, nullable) id _Nullable (^apiResponseObjReformerBlock)(id responseObject, NSError * _Nullable error);
-
-/**
  *  rpcDelegate
  *  用于实现上层JSON-RPC的delegate
  */
 - (nullable id<DRDRPCProtocol>)rpcDelegate;
+
+/**
+ *  HTTPHeader Field Delegate
+ */
+- (nullable id<DRDHttpHeaderDelegate>)apiHttpHeaderDelegate;
+
+/**
+ *  主要用于JSON-RPC协议中的Method字段
+ *
+ *  @return NSString
+ */
+- (nullable NSString *)requestMethod;
+
+/**
+ *  用户api请求中的参数列表
+ *   如果JSON-RPC协议，则Parameters 放入JSON-RPC协议中
+ *   如果非JSON-RPC协议，则requestParameters 会作为url的一部分发送给服务器
+ *
+ *  @return 一般来说是NSDictionary
+ */
+- (nullable id)requestParameters;
 
 /**
  *  自定义的RequestUrl 请求
@@ -137,6 +120,18 @@ NS_ASSUME_NONNULL_BEGIN
  *  @return url String
  */
 - (nullable NSString *)customRequestUrl;
+
+/**
+ *  一般用来进行JSON -> Model 数据的转换工作
+ *   返回的id，如果没有error，则为转换成功后的Model数据；
+ *    如果有error， 则直接返回传参中的responseObject
+ *
+ *  @param responseObject 请求的返回
+ *  @param error          请求的错误
+ *
+ *  @return 默认直接返回responseObject
+ */
+- (nullable id)apiResponseObjReformer:(id)responseObject andError:(NSError * _Nullable)error;
 
 /**
  *  @descriptions

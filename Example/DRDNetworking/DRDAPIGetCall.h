@@ -8,6 +8,6 @@
 
 #import <DRDBaseAPI.h>
 
-@interface DRDAPIGetCall : DRDBaseAPI<DRDAPI>
+@interface DRDAPIGetCall : DRDBaseAPI 
 
 @end

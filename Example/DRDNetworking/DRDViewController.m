@@ -87,7 +87,6 @@
                                     name:@"pictures"
                                 fileName:@"test"
                                 mimeType:@"image/jpeg"];
-        
     }];
     [apiPost setApiProgressBlock:^(NSProgress * progress) {
         __weak typeof(self) weakSelf = self;
@@ -115,9 +114,17 @@
         weakSelf.label.text = @"Batch call TWO finished!";
     }];
     
+    DRDGeneralAPI *apiGet3 = [[DRDGeneralAPI alloc] initWithRequestMethod:@"ip"];
+    apiGet3.baseUrl        = @"http://httpbin.org";
+    apiGet3.apiRequestMethodType = DRDRequestMethodTypeGET;
+    [apiGet3 setApiCompletionHandler:^(id responseObject, NSError * error) {
+        weakSelf.label.text = @"Batch call Three finished!";
+    }];
+    
     DRDAPIBatchAPIRequests *apiBatchApis = [[DRDAPIBatchAPIRequests alloc]init];
     [apiBatchApis addAPIRequest:apiGet1];
     [apiBatchApis addAPIRequest:apiPost2];
+    [apiBatchApis addAPIRequest:apiGet3];
     apiBatchApis.delegate = self;
     [apiBatchApis start];
 }

@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @return 组装完成后的rpc url
  */
-- (nullable NSString *)rpcRequestUrlWithAPI:(DRDBaseAPI<DRDAPI>*)api;
+- (nullable NSString *)rpcRequestUrlWithAPI:(DRDBaseAPI *)api;
 
 /**
  *  遵循RPC协议的参数列表
@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @return 组装完成后的rpc parameters
  */
-- (nullable id)rpcRequestParamsWithAPI:(DRDBaseAPI<DRDAPI>*)api;
+- (nullable id)rpcRequestParamsWithAPI:(DRDBaseAPI *)api;
 
 /**
  *  遵循RPC协议的解包函数

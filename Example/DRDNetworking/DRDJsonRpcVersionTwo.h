@@ -11,8 +11,6 @@
 
 @interface DRDJsonRpcVersionTwo : NSObject<DRDRPCProtocol>
 
-//- (nullable instancetype)init NS_UNAVAILABLE;
-
 + (nullable instancetype)sharedJsonRpcVersionTwo;
 
 @end

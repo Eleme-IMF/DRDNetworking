@@ -17,7 +17,7 @@
 
 @interface DRDAPIManager (UnitTesting)
 
-- (AFHTTPSessionManager *)sessionManagerWithAPI:(DRDBaseAPI<DRDAPI>*)api;
+- (AFHTTPSessionManager *)sessionManagerWithAPI:(DRDBaseAPI*)api;
 
 @end
 

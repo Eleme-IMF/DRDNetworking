@@ -10,7 +10,6 @@
 
 @class DRDBaseAPI;
 @class DRDAPIBatchAPIRequests;
-@protocol DRDAPI;
 
 @protocol DRDAPIBatchAPIRequestsProtocol <NSObject>
 
@@ -40,7 +39,7 @@
  *
  *  @param api
  */
-- (void)addAPIRequest:(nonnull DRDBaseAPI<DRDAPI> *)api;
+- (void)addAPIRequest:(nonnull DRDBaseAPI *)api;
 
 /**
  *  将带有API集合的Sets 赋值

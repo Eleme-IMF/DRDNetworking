@@ -48,4 +48,12 @@
     }
 }
 
+- (nullable id)apiResponseObjReformer:(id)responseObject andError:(NSError * _Nullable)error {
+    if (self.apiResponseObjReformerBlock) {
+        return self.apiResponseObjReformerBlock(responseObject, error);
+    } else {
+        return responseObject;
+    }
+}
+
 @end
