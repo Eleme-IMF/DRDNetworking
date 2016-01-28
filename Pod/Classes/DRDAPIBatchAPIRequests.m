@@ -10,7 +10,7 @@
 #import "DRDBaseAPI.h"
 #import "DRDAPIManager.h"
 
-static  NSString * const hint = @"API should be kind of DRDBaseAPI and conform to protocol DRDAPI";
+static  NSString * const hint = @"API should be kind of DRDBaseAPI";
 
 @interface DRDAPIBatchAPIRequests ()
 
@@ -30,11 +30,16 @@ static  NSString * const hint = @"API should be kind of DRDBaseAPI and conform t
 }
 
 #pragma mark - Add Requests
-- (void)addAPIRequest:(DRDBaseAPI<DRDAPI>*)api {
+- (void)addAPIRequest:(DRDBaseAPI *)api {
     NSParameterAssert(api);
-    NSAssert([api isKindOfClass:[DRDBaseAPI class]] &&
-             [api conformsToProtocol:@protocol(DRDAPI)],
+    NSAssert([api isKindOfClass:[DRDBaseAPI class]],
              hint);
+    if ([self.apiRequestsSet containsObject:api]) {
+#ifdef DEBUG    
+        NSLog(@"Add SAME API into BatchRequest set");
+#endif
+    }
+    
     [self.apiRequestsSet addObject:api];
 }
 
@@ -42,7 +47,7 @@ static  NSString * const hint = @"API should be kind of DRDBaseAPI and conform t
     NSParameterAssert(apis);
     NSAssert([apis count] > 0, @"Apis amounts should greater than ZERO");
     [apis enumerateObjectsUsingBlock:^(id  obj, BOOL * stop) {
-        if ([obj isKindOfClass:[DRDBaseAPI class]] && [obj conformsToProtocol:@protocol(DRDAPI)]) {
+        if ([obj isKindOfClass:[DRDBaseAPI class]]) {
             [self.apiRequestsSet addObject:obj];
         } else {
             __unused NSString *hintStr = [NSString stringWithFormat:@"%@ %@",

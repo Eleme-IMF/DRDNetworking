@@ -7,8 +7,8 @@
 //
 
 #import "DRDTestCase.h"
-#import <DurandalNetworking/DRDGeneralAPI.h>
-#import <DurandalNetworking/DRDAPIManager.h>
+#import <DRDGeneralAPI.h>
+#import <DRDAPIManager.h>
 #import "DRDJsonRpcVersionTwo.h"
 
 @interface TestAuthor : NSObject
@@ -29,9 +29,8 @@ static NSString *jsonRPCUrl = @"http://www.raboof.com/projects/jayrock/demo.ashx
 @end
 
 @implementation DRDJSONRPCTest
-#if 0
+
 - (void)testJsonRpcNumber {
-    sleep(5);
     XCTestExpectation *expectation = [self expectationWithDescription:@"testJSONRPCNumber"];
 
     DRDGeneralAPI *generalAPI = [[DRDGeneralAPI alloc]init];
@@ -55,12 +54,10 @@ static NSString *jsonRPCUrl = @"http://www.raboof.com/projects/jayrock/demo.ashx
         }
     }];
     [generalAPI start];
-    [self waitForExpectationsWithTimeout:normalTimeout handler:nil];
+    [self waitForExpectationsWithTimeout:normalTimeout * 2 handler:nil];
 }
 
 - (void)testJsonRpcArray {
-    sleep(5);
-
     XCTestExpectation *expectation = [self expectationWithDescription:@"testJSONRPCArray"];
     
     DRDGeneralAPI *generalAPI           = [[DRDGeneralAPI alloc]init];
@@ -78,12 +75,10 @@ static NSString *jsonRPCUrl = @"http://www.raboof.com/projects/jayrock/demo.ashx
         [expectation fulfill];
     }];
     [generalAPI start];
-    [self waitForExpectationsWithTimeout:normalTimeout handler:nil];
+    [self waitForExpectationsWithTimeout:normalTimeout * 2 handler:nil];
 }
 
 - (void)testJsonRpcThrowError {
-    sleep(5);
-
     XCTestExpectation *expectation = [self expectationWithDescription:@"testJSONRPCError"];
     
     DRDGeneralAPI *generalAPI = [[DRDGeneralAPI alloc]init];
@@ -101,12 +96,10 @@ static NSString *jsonRPCUrl = @"http://www.raboof.com/projects/jayrock/demo.ashx
         [expectation fulfill];
     }];
     [generalAPI start];
-    [self waitForExpectationsWithTimeout:normalTimeout handler:nil];
+    [self waitForExpectationsWithTimeout:normalTimeout * 2 handler:nil];
 }
 
 - (void)testJsonRpcJsonToModelConvert {
-    sleep(5);
-
     XCTestExpectation *expectation = [self expectationWithDescription:@"testJSONRPCJsonToModelConvert"];
     
     DRDGeneralAPI *generalAPI = [[DRDGeneralAPI alloc]init];
@@ -145,7 +138,7 @@ static NSString *jsonRPCUrl = @"http://www.raboof.com/projects/jayrock/demo.ashx
         [expectation fulfill];
     }];
     [generalAPI start];
-    [self waitForExpectationsWithTimeout:normalTimeout handler:nil];
+    [self waitForExpectationsWithTimeout:normalTimeout * 2 handler:nil];
 }
-#endif
+
 @end

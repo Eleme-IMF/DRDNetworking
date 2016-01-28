@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2015 Erik Doernenburg and contributors
+ *  Copyright (c) 2004-2016 Erik Doernenburg and contributors
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may
  *  not use these files except in compliance with the License. You may obtain
@@ -201,7 +201,7 @@
     {
         if([expectations count] == 0)
             break;
-        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:step]];
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:MIN(step, delay)]];
         delay -= step;
         step *= 2;
     }

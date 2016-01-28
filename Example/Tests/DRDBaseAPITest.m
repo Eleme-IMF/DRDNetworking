@@ -7,14 +7,15 @@
 //
 
 #import "DRDTestCase.h"
-#import <DurandalNetworking/DRDGeneralAPI.h>
-#import <DurandalNetworking/DRDAPIManager.h>
+#import <DRDGeneralAPI.h>
+#import <DRDAPIManager.h>
 
-NSString *eleUrl = @"http://ele.me";
+NSString *eleUrl = @"http://www.ele.me/home/";
 
 @interface DRDAPIManager (UnitTesting)
 
-- (NSString *)requestUrlStringWithAPI:(DRDBaseAPI<DRDAPI> *)api;
+- (NSString *)requestUrlStringWithAPI:(DRDBaseAPI  *)api;
+- (NSString *)requestBaseUrlStringWithAPI:(DRDBaseAPI  *)api;
 
 @end
 
@@ -37,29 +38,22 @@ NSString *eleUrl = @"http://ele.me";
     generalapi.baseUrl          = self.baseURLStr;
     generalapi.customRequestUrl = eleUrl;
 
-    XCTAssert([[[DRDAPIManager sharedDRDAPIManager] requestUrlStringWithAPI:generalapi]
-               isEqualToString:eleUrl]);
+    NSString *baseUrlStr = [[DRDAPIManager sharedDRDAPIManager] requestBaseUrlStringWithAPI:generalapi];
     
-    DRDGeneralAPI *generalapiWithRequestMethod = [[DRDGeneralAPI alloc] init];
-    generalapiWithRequestMethod.baseUrl = self.baseURLStr;
-    generalapiWithRequestMethod.requestMethod = @"get";
+    XCTAssert([[[DRDAPIManager sharedDRDAPIManager] requestUrlStringWithAPI:generalapi]
+               isEqualToString:[eleUrl stringByReplacingOccurrencesOfString:baseUrlStr
+                                                                 withString:@""]]);
+    
+    DRDGeneralAPI *generalapiWithRequestMethod   = [[DRDGeneralAPI alloc] init];
+    generalapiWithRequestMethod.baseUrl          = self.baseURLStr;
+    generalapiWithRequestMethod.requestMethod    = @"get";
     generalapiWithRequestMethod.customRequestUrl = eleUrl;
     
     XCTAssert([[[DRDAPIManager sharedDRDAPIManager] requestUrlStringWithAPI:generalapiWithRequestMethod]
-               isEqualToString:eleUrl]);
-}
-
-- (void)testNotImplementProtocol {
-    BOOL exceptioinHappend = NO;
-    @try {
-        __unused DRDNoProtocolImpAPI *noImpApi = [[DRDNoProtocolImpAPI alloc] init];
-    }
-    @catch (NSException *exception) {
-        exceptioinHappend = YES;
-    }
-    @finally {
-        XCTAssert(exceptioinHappend == YES);
-    }
+               isEqualToString:[eleUrl stringByReplacingOccurrencesOfString:baseUrlStr
+                                                                 withString:@""]]);
+    XCTAssert([[[DRDAPIManager sharedDRDAPIManager] requestBaseUrlStringWithAPI:generalapiWithRequestMethod]
+              isEqualToString:@"http://www.ele.me/"]);
 }
 
 @end

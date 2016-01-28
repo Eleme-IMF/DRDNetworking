@@ -12,20 +12,12 @@
 #import "DRDRPCProtocol.h"
 #import "DRDSecurityPolicy.h"
 
-@interface DRDBaseAPI ()
-
-@property (nonatomic, weak) id apiSpec;
-
-@end
-
 @implementation DRDBaseAPI
 
 - (instancetype)init {
     self = [super init];
-    if ([self conformsToProtocol:@protocol(DRDAPI)]) {
-        self.apiSpec = (id)self;
-    } else {
-        NSAssert(NO, @"具体的api实现须实现 DRDAPI protocol");
+    if (self) {
+        
     }
     return self;
 }
@@ -44,6 +36,22 @@
 
 - (nullable id<DRDRPCProtocol>)rpcDelegate {
     return nil;
+}
+
+- (nullable id<DRDHttpHeaderDelegate>)apiHttpHeaderDelegate {
+    return nil;
+}
+
+- (nullable NSString *)requestMethod {
+    return nil;
+}
+
+- (nullable id)requestParameters {
+    return nil;
+}
+
+- (nullable id)apiResponseObjReformer:(id)responseObject andError:(NSError * _Nullable)error {
+    return responseObject;
 }
 
 - (DRDRequestMethodType)apiRequestMethodType {
@@ -103,15 +111,31 @@
 }
 
 - (void)start {
-    if ([self conformsToProtocol:@protocol(DRDAPI)]) {
-        [[DRDAPIManager sharedDRDAPIManager] sendAPIRequest:((DRDBaseAPI<DRDAPI>*)self)];
-    }
+    [[DRDAPIManager sharedDRDAPIManager] sendAPIRequest:((DRDBaseAPI *)self)];
 }
 
 - (void)cancel {
-    if ([self conformsToProtocol:@protocol(DRDAPI)]) {
-        [[DRDAPIManager sharedDRDAPIManager] cancelAPIRequest:((DRDBaseAPI<DRDAPI>*)self)];
-    }
+    [[DRDAPIManager sharedDRDAPIManager] cancelAPIRequest:((DRDBaseAPI *)self)];
+}
+
+- (NSUInteger)hash {
+    NSMutableString *hashStr = [NSMutableString stringWithFormat:@"%@ %@ %@ %@",
+                                [self requestMethod], [self requestParameters], [self baseUrl], [self customRequestUrl]];
+    return [hashStr hash];
+}
+
+-(BOOL)isEqualToAPI:(DRDBaseAPI *)api {
+    return [self hash] == [api hash];
+}
+
+- (BOOL)isEqual:(id)object {
+    if (self == object) return YES;
+    if (![object isKindOfClass:[DRDBaseAPI class]]) return NO;
+    return [self isEqualToAPI:(DRDBaseAPI *) object];
+}
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"BaseUrl:%@\nCustomUrl:%@", [self baseUrl], [self customRequestUrl]];
 }
 
 @end

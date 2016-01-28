@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2014-2015 Erik Doernenburg and contributors
+ *  Copyright (c) 2014-2016 Erik Doernenburg and contributors
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may
  *  not use these files except in compliance with the License. You may obtain
@@ -40,6 +40,10 @@ BOOL OCMIsObjectType(const char *objCType)
     objCType = OCMTypeWithoutQualifiers(objCType);
 
     if(strcmp(objCType, @encode(id)) == 0 || strcmp(objCType, @encode(Class)) == 0)
+        return YES;
+
+    // sometimes the name of an object's class is tacked onto the type, in double quotes
+    if(strncmp(objCType, @encode(id), 1) == 0 && objCType[1] == '\"')
         return YES;
 
     // if the returnType is a typedef to an object, it has the form ^{OriginClass=#}

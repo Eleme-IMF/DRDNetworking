@@ -1,11 +1,11 @@
 source 'https://github.com/CocoaPods/Specs.git'
 
-target 'DurandalNetworking_Example', :exclusive => true do
-  pod "DurandalNetworking", :path => "../"
+target 'DRDNetworking_Example', :exclusive => true do
+  pod 'DRDNetworking', :path => '../'
 end
 
-target 'DurandalNetworking_Tests', :exclusive => true do
-  pod "DurandalNetworking", :path => "../"
+target 'DRDNetworking_Tests', :exclusive => true do
+  pod 'DRDNetworking', :path => '../'
 
   pod 'Specta'
   pod 'Expecta'

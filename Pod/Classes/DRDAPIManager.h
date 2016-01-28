@@ -25,7 +25,7 @@
  *
  *  @param api 要发送的api
  */
-- (void)sendAPIRequest:(nonnull DRDBaseAPI<DRDAPI> *)api;
+- (void)sendAPIRequest:(nonnull DRDBaseAPI  *)api;
 
 /**
  *  取消API请求
@@ -35,7 +35,7 @@
  *
  *  @param api 要取消的api
  */
-- (void)cancelAPIRequest:(nonnull DRDBaseAPI<DRDAPI> *)api;
+- (void)cancelAPIRequest:(nonnull DRDBaseAPI  *)api;
 
 /**
  *  发送一系列API请求

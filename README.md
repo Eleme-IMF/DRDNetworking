@@ -1,30 +1,30 @@
-# DurandalNetworking
-[![CI Status](http://img.shields.io/travis/Eleme-IMF/DurandalNetworking.svg?style=flat)](https://travis-ci.org/Eleme-IMF/DurandalNetworking)
-[![codecov.io](https://codecov.io/github/Eleme-IMF/DurandalNetworking/coverage.svg?branch=master)](https://codecov.io/github/Eleme-IMF/DurandalNetworking?branch=master)
-[![Version](https://img.shields.io/cocoapods/v/DurandalNetworking.svg?style=flat)](http://cocoapods.org/pods/DurandalNetworking)
-[![License](https://img.shields.io/cocoapods/l/DurandalNetworking.svg?style=flat)](http://cocoapods.org/pods/DurandalNetworking)
-[![Platform](https://img.shields.io/cocoapods/p/DurandalNetworking.svg?style=flat)](http://cocoapods.org/pods/DurandalNetworking)
+# DRDNetworking
+[![CI Status](http://img.shields.io/travis/Eleme-IMF/DRDNetworking.svg?style=flat)](https://travis-ci.org/Eleme-IMF/DRDNetworking)
+[![codecov.io](https://codecov.io/github/Eleme-IMF/DRDNetworking/coverage.svg?branch=master)](https://codecov.io/github/Eleme-IMF/DRDNetworking?branch=master)
+[![Version](https://img.shields.io/cocoapods/v/DRDNetworking.svg?style=flat)](http://cocoapods.org/pods/DRDNetworking)
+[![License](https://img.shields.io/cocoapods/l/DRDNetworking.svg?style=flat)](http://cocoapods.org/pods/DRDNetworking)
+[![Platform](https://img.shields.io/cocoapods/p/DRDNetworking.svg?style=flat)](http://cocoapods.org/pods/DRDNetworking)
 
-DurandalNetworking is a delightful networking library which provide you a convenient way to handle API request, it has no invasion to your project, you won't get into trouble when you remove it one day, even though that's not what I want to see. Currently, we are using AFNetworking 3.0.0+ with Session Manager.  
-DurandalNetworking compatible with `RESTFUL API` and `JSON-RPC API`. If you needs to support with your own `JSON Based RPC Call`, just a few lines of code needed!  
+DRDNetworking is a delightful networking library which provide you a convenient way to handle API request, it has no invasion to your project, you won't get into trouble when you remove it one day, even though that's not what I want to see. Currently, we are using AFNetworking 3.0.0+ with Session Manager.  
+DRDNetworking compatible with `RESTFUL API` and `JSON-RPC API`. If you needs to support with your own `JSON Based RPC Call`, just a few lines of code needed!  
 More detail, please run the Example project in the repo.
 
 ## Usage
 ---------
 ## Installation
 
-DurandalNetworking is available through [CocoaPods](http://cocoapods.org). To install
+DRDNetworking is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod "DurandalNetworking"
+pod "DRDNetworking"
 ```
 ### Run Example
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
 ### Quick Start
-* In your podfile, just add `pod 'DurandalNetworking`, then `pod update`.
-* In your project file where you want to use DurandalNetworking, add `#import "DurandalNetworking.h"`
+* In your podfile, just add `pod 'DRDNetworking`, then `pod update`.
+* In your project file where you want to use DRDNetworking, add `#import "DRDNetworking.h"`
 * Write api code to run a networking call:
 
 ```
@@ -160,9 +160,14 @@ Review it, and write your own protocol.
 ## Requirements
 * iOS 7.0+  
 * Objective-C 2.0
-* AFNetworking 3.0.1+  
+* AFNetworking 3.0.0+  
   
 ## ChangeLog
+### v0.5.0  
+* Reuse one session for same base url requests to reuse TCP/IP connection
+* More convenience API design
+* More unit testing for code coverage
+
 ### v0.4.0
 * Project Init
 
@@ -170,6 +175,9 @@ Review it, and write your own protocol.
 
 cendywang, cendymails@gmail.com
 
+## Contributor
+Alex Ao, aozhimin0811@gmail.com
+
 ## License
 
-DurandalNetworking is available under the MIT license. See the LICENSE file for more info.
+DRDNetworking is available under the MIT license. See the LICENSE file for more info.

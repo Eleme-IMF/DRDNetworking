@@ -7,8 +7,9 @@
 //
 
 #import "DRDConfig.h"
+#import "DRDAPIDefines.h"
 
-NSString * DRDDefaultGeneralErrorString = @"服务器连接错误，请稍候重试";
+NSString * DRDDefaultGeneralErrorString        = @"服务器连接错误，请稍候重试";
 
 @implementation DRDConfig
 
@@ -18,6 +19,7 @@ NSString * DRDDefaultGeneralErrorString = @"服务器连接错误，请稍候重
         self.generalErrorTypeStr                  = DRDDefaultGeneralErrorString;
         self.isNetworkingActivityIndicatorEnabled = YES;
         self.isErrorCodeDisplayEnabled            = YES;
+        self.maxHttpConnectionPerHost             = MAX_HTTP_CONNECTION_PER_HOST;
     }
     return self;
 }

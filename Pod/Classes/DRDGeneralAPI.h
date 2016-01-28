@@ -10,7 +10,7 @@
 #import "DRDAPIDefines.h"
 
 NS_ASSUME_NONNULL_BEGIN
-@interface DRDGeneralAPI : DRDBaseAPI<DRDAPI>
+@interface DRDGeneralAPI : DRDBaseAPI 
 
 /**
  *  DRDAPI Protocol中的 requestMethod字段
@@ -77,6 +77,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak,   nullable) id<DRDRPCProtocol> rpcDelegate;
 
 /**
+ *  同BaseAPI apiHttpHeaderDelegate
+ */
+@property (nonatomic, weak,   nullable) id<DRDHttpHeaderDelegate> apiHttpHeaderDelegate;
+
+/**
  *  同BaseAPI apiAddtionalRequestFunction
  */
 @property (nonatomic, copy,   nullable) NSString     *apiAddtionalRequestFunction;
@@ -90,6 +95,22 @@ NS_ASSUME_NONNULL_BEGIN
  *  同BaseAPI apiRequestDidSent
  */
 @property (nonatomic, copy, nullable) void (^apiRequestDidSentBlock)();
+
+/**
+ *  一般用来进行JSON -> Model 数据的转换工作
+ *   返回的id，如果没有error，则为转换成功后的Model数据；
+ *    如果有error， 则直接返回传参中的responseObject
+ *
+ *  注意：
+ *   这里与DRDAPI Protocol中的apiResponseObjReformer 有重合。
+ *   这里的block 主要给 DRDGeneralAPI 使用
+ *
+ *  @param responseObject 请求的返回
+ *  @param error          请求的错误
+ *
+ *  @return 整理过后的请求数据
+ */
+@property (nonatomic, copy, nullable) id _Nullable (^apiResponseObjReformerBlock)(id responseObject, NSError * _Nullable error);
 
 - (nullable instancetype)init;
 - (nullable instancetype)initWithRequestMethod:(NSString *)requestMethod;

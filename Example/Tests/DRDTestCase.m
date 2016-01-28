@@ -7,8 +7,8 @@
 //
 
 #import "DRDTestCase.h"
-#import <DurandalNetworking//DRDAPIManager.h>
-#import <DurandalNetworking/DRDConfig.h>
+#import <DRDAPIManager.h>
+#import <DRDConfig.h>
 #import <Expecta/Expecta.h>
 
 NSString * const DRDNetworkingTestsBaseURLString = @"http://httpbin.org/";

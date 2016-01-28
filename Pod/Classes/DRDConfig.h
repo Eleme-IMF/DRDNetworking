@@ -37,6 +37,12 @@ FOUNDATION_EXPORT NSString *DRDDefaultGeneralErrorString;
 @property (nonatomic, copy, nullable) NSString *userAgent;
 
 /**
+ *  每个Host的最大连接数
+ *  默认为2
+ */
+@property (nonatomic, assign) NSUInteger maxHttpConnectionPerHost;
+
+/**
  *  NetworkingActivityIndicator
  *  Default by YES
  */

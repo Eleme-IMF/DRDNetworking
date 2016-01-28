@@ -8,14 +8,14 @@
 
 #import "DRDTestCase.h"
 #import <OCMock.h>
-#import <DurandalNetworking/DRDGeneralAPI.h>
-#import <DurandalNetworking/DRDAPIManager.h>
-#import <DurandalNetworking/DRDAPIBatchAPIRequests.h>
+#import <DRDGeneralAPI.h>
+#import <DRDAPIManager.h>
+#import <DRDAPIBatchAPIRequests.h>
 #import <AFNetworking.h>
 
 @interface DRDAPIManager (UnitTesting)
 
-- (AFHTTPSessionManager *)sessionManagerWithAPI:(DRDBaseAPI<DRDAPI>*)api;
+- (AFHTTPSessionManager *)sessionManagerWithAPI:(DRDBaseAPI *)api;
 
 @end
 
@@ -54,13 +54,14 @@
     id partialMock = OCMPartialMock([DRDAPIManager sharedDRDAPIManager]);
     OCMStub([partialMock sessionManagerWithAPI:[OCMArg any]]).andReturn(afnSession);
     
-    DRDGeneralAPI *generalAPIGet = [[DRDGeneralAPI alloc] init];
-    generalAPIGet.apiRequestMethodType = DRDRequestMethodTypeGET;
-    generalAPIGet.baseUrl = self.baseURLStr;
-    
-    DRDGeneralAPI *generalAPIPost = [[DRDGeneralAPI alloc] init];
+    DRDGeneralAPI *generalAPIGet        = [[DRDGeneralAPI alloc] init];
+    generalAPIGet.apiRequestMethodType  = DRDRequestMethodTypeGET;
+    generalAPIGet.baseUrl               = self.baseURLStr;
+
+    DRDGeneralAPI *generalAPIPost       = [[DRDGeneralAPI alloc] init];
     generalAPIPost.apiRequestMethodType = DRDRequestMethodTypePOST;
-    generalAPIPost.baseUrl = self.baseURLStr;
+    generalAPIPost.baseUrl              = self.baseURLStr;
+    generalAPIPost.requestMethod        = @"post";
     
     DRDAPIBatchAPIRequests *batchRequests = [[DRDAPIBatchAPIRequests alloc] init];
     [batchRequests addAPIRequest:generalAPIGet];

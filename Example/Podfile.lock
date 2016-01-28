@@ -14,27 +14,27 @@ PODS:
   - AFNetworking/Serialization (3.0.4)
   - AFNetworking/UIKit (3.0.4):
     - AFNetworking/NSURLSession
-  - DurandalNetworking (0.4.0):
-    - AFNetworking (~> 3.0.1)
+  - DRDNetworking (0.5.0):
+    - AFNetworking (~> 3.0.0)
   - Expecta (1.0.5)
-  - OCMock (3.2)
+  - OCMock (3.2.2)
   - Specta (1.0.5)
 
 DEPENDENCIES:
-  - DurandalNetworking (from `../`)
+  - DRDNetworking (from `../`)
   - Expecta
   - OCMock
   - Specta
 
 EXTERNAL SOURCES:
-  DurandalNetworking:
+  DRDNetworking:
     :path: ../
 
 SPEC CHECKSUMS:
   AFNetworking: a0075feb321559dc78d9d85b55d11caa19eabb93
-  DurandalNetworking: 0cfe3032505df912fdf3a8f0ec4e4e005ce67932
+  DRDNetworking: 3284be93e2abd3a37080d10294c43b5045603652
   Expecta: e1c022fcd33910b6be89c291d2775b3fe27a89fe
-  OCMock: 28def049ef47f996b515a8eeea958be7ccab2dbb
+  OCMock: 18c9b7e67d4c2770e95bb77a9cc1ae0c91fe3835
   Specta: ac94d110b865115fe60ff2c6d7281053c6f8e8a2
 
 COCOAPODS: 0.39.0
