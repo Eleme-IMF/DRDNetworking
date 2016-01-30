@@ -30,25 +30,6 @@
     XCTAssert(manager == [DRDAPIManager sharedDRDAPIManager]);
 }
 
-- (void)testSendAPIRequest {
-    id afnSession  = OCMClassMock([AFHTTPSessionManager class]);
-    id partialMock = OCMPartialMock([DRDAPIManager sharedDRDAPIManager]);
-    OCMStub([partialMock sessionManagerWithAPI:[OCMArg any]]).andReturn(afnSession);
-    
-    DRDGeneralAPI *generalAPI           = [[DRDGeneralAPI alloc] init];
-    generalAPI.apiRequestMethodType     = DRDRequestMethodTypeGET;
-    generalAPI.baseUrl                  = self.baseURLStr;
-    
-    [[DRDAPIManager sharedDRDAPIManager] sendAPIRequest:generalAPI];
-    
-    OCMVerify([afnSession GET:[OCMArg any]
-                   parameters:[OCMArg any]
-                     progress:[OCMArg any]
-                      success:[OCMArg any]
-                      failure:[OCMArg any]]);
-    [partialMock stopMocking];
-}
-
 - (void)testSendBatchAPIRequests {
     id afnSession  = OCMClassMock([AFHTTPSessionManager class]);
     id partialMock = OCMPartialMock([DRDAPIManager sharedDRDAPIManager]);
@@ -80,6 +61,7 @@
                        success:[OCMArg any]
                        failure:[OCMArg any]]);
     [partialMock stopMocking];
+    [afnSession stopMocking];
 }
 
 @end

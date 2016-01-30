@@ -115,6 +115,7 @@
                       success:[OCMArg any]
                       failure:[OCMArg any]]);
     [partialMock stopMocking];
+    [afnSession stopMocking];
 }
 
 @end

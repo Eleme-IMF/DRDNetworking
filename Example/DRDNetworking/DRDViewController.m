@@ -33,7 +33,6 @@
 }
 
 - (IBAction)btnClicked:(UIButton *)sender {
-    sender.enabled = NO;
     __weak typeof(self) weakSelf       = self;
     self.label.text = @"正在发送";
 
@@ -47,8 +46,26 @@
         if (error) {
             NSLog(@"Error is %@", error.localizedDescription);
         }
-        sender.enabled = YES;
         weakSelf.label.text = @"发送成功";
+    }];
+    [apiGeGet start];
+}
+
+- (IBAction)sendThreeBtnClicked:(UIButton *)sender {
+    [self sendThreeRequests];
+}
+
+- (void)sendThreeRequests {
+    // Use GeneralAPI
+    DRDGeneralAPI *apiGeGet            = [[DRDGeneralAPI alloc] initWithRequestMethod:@"get"];
+    apiGeGet.apiRequestMethodType      = DRDRequestMethodTypeGET;
+    apiGeGet.apiRequestSerializerType  = DRDRequestSerializerTypeHTTP;
+    apiGeGet.apiResponseSerializerType = DRDResponseSerializerTypeHTTP;
+    [apiGeGet setApiCompletionHandler:^(id responseObject, NSError * error) {
+        NSLog(@"responseObject is %@", responseObject);
+        if (error) {
+            NSLog(@"Error is %@", error.localizedDescription);
+        }
     }];
     [apiGeGet start];
     
@@ -58,11 +75,9 @@
         if (error) {
             NSLog(@"Error is %@", error.localizedDescription);
         }
-        sender.enabled = YES;
-        weakSelf.label.text = @"发送成功";
     }];
     [apiGet start];
-
+    
     self.apiPut = [[DRDAPIPutCall alloc] init];
     [self.apiPut setApiCompletionHandler:^(id responseObject, NSError * error) {
         NSLog(@"responseObject is %@", responseObject);

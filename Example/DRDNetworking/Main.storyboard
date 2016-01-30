@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="AaS-vo-5nI">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="AaS-vo-5nI">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
@@ -96,6 +96,17 @@
                                     <action selector="batchSendBtnClicked:" destination="whP-gf-Uak" eventType="touchUpInside" id="Qmy-fr-joL"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HwM-t5-Bf7">
+                                <rect key="frame" x="232" y="203" width="137" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="BF0-28-wDm"/>
+                                    <constraint firstAttribute="width" constant="137" id="OHt-nL-WAD"/>
+                                </constraints>
+                                <state key="normal" title="Send MultiRequests"/>
+                                <connections>
+                                    <action selector="sendThreeBtnClicked:" destination="whP-gf-Uak" eventType="touchUpInside" id="krd-tR-6sg"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -103,6 +114,7 @@
                             <constraint firstItem="j43-Bl-Oma" firstAttribute="centerX" secondItem="TpU-gO-2f1" secondAttribute="centerX" id="5pO-Fr-ofi"/>
                             <constraint firstItem="fbf-ht-seV" firstAttribute="trailing" secondItem="TpU-gO-2f1" secondAttribute="trailingMargin" id="6LR-aw-WeQ"/>
                             <constraint firstItem="WEJ-rk-SVX" firstAttribute="top" secondItem="TpU-gO-2f1" secondAttribute="topMargin" constant="49" id="6QO-zp-q6k"/>
+                            <constraint firstItem="HwM-t5-Bf7" firstAttribute="centerX" secondItem="TpU-gO-2f1" secondAttribute="centerX" id="CdN-Ni-jIu"/>
                             <constraint firstItem="j43-Bl-Oma" firstAttribute="top" secondItem="WEJ-rk-SVX" secondAttribute="bottom" constant="8" id="Fdi-GR-qQB"/>
                             <constraint firstItem="Rcx-ey-BWG" firstAttribute="trailing" secondItem="TpU-gO-2f1" secondAttribute="trailingMargin" id="Ri0-nn-2NE"/>
                             <constraint firstItem="Rkb-FQ-TOb" firstAttribute="top" secondItem="5VN-Ua-Eey" secondAttribute="bottom" constant="10" id="VGJ-mr-dxI"/>
@@ -113,6 +125,7 @@
                             <constraint firstItem="5VN-Ua-Eey" firstAttribute="top" secondItem="j43-Bl-Oma" secondAttribute="bottom" constant="8" id="lIn-AA-oli"/>
                             <constraint firstItem="fbf-ht-seV" firstAttribute="leading" secondItem="TpU-gO-2f1" secondAttribute="leadingMargin" id="rQb-9W-c93"/>
                             <constraint firstItem="Rcx-ey-BWG" firstAttribute="top" secondItem="5VN-Ua-Eey" secondAttribute="bottom" constant="8" id="vAC-3L-jF7"/>
+                            <constraint firstItem="HwM-t5-Bf7" firstAttribute="top" secondItem="Rkb-FQ-TOb" secondAttribute="bottom" constant="8" id="vHc-d7-VkR"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="普通" id="BcP-bO-x8m"/>

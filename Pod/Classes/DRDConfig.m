@@ -24,4 +24,14 @@ NSString * DRDDefaultGeneralErrorString        = @"服务器连接错误，请�
     return self;
 }
 
+-(id)copyWithZone:(NSZone *)zone {
+    DRDConfig *config                = [[DRDConfig allocWithZone:zone] init];
+    config.generalErrorTypeStr       = self.generalErrorTypeStr;
+    config.isErrorCodeDisplayEnabled = self.isErrorCodeDisplayEnabled;
+    config.baseUrlStr                = self.baseUrlStr;
+    config.userAgent                 = self.userAgent;
+    config.maxHttpConnectionPerHost  = self.maxHttpConnectionPerHost;
+    return config;
+}
+
 @end

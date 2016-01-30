@@ -15,6 +15,15 @@
 #import <pthread.h>
 #import "DRDSecurityPolicy.h"
 
+static dispatch_queue_t drd_api_task_creation_queue() {
+    static dispatch_queue_t drd_api_task_creation_queue;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        drd_api_task_creation_queue =
+        dispatch_queue_create("me.ele.imf.networking.durandal.api.creation", DISPATCH_QUEUE_SERIAL);
+    });
+    return drd_api_task_creation_queue;
+}
 
 static DRDAPIManager *sharedDRDAPIManager       = nil;
 
@@ -125,8 +134,8 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
     
     // 在某些情况下，一些用户会直接把整个url地址写进 baseUrl
     // 因此，还需要对baseUrl 进行一次切割
-    NSURL *url  = [NSURL URLWithString:baseUrl];
-    NSURL *root = [NSURL URLWithString:@"/" relativeToURL:url];
+    NSURL *theUrl = [NSURL URLWithString:baseUrl];
+    NSURL *root   = [NSURL URLWithString:@"/" relativeToURL:theUrl];
     return [NSString stringWithFormat:@"%@", root.absoluteString];
 }
 
@@ -268,7 +277,9 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
                     error:(NSError *)error {
     obj = [api apiResponseObjReformer:obj andError:error];
     if ([api apiCompletionHandler]) {
-        api.apiCompletionHandler(obj, error);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            api.apiCompletionHandler(obj, error);
+        });
     }
 }
 
@@ -308,11 +319,13 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
     NSParameterAssert(api);
     NSAssert(self.configuration, @"Configuration Can not be nil");
     
-    AFHTTPSessionManager *sessionManager = [self sessionManagerWithAPI:api];
-    if (!sessionManager) {
-        return;
-    }
-    [self _sendSingleAPIRequest:api withSessionManager:sessionManager];
+    dispatch_async(drd_api_task_creation_queue(), ^{
+        AFHTTPSessionManager *sessionManager = [self sessionManagerWithAPI:api];
+        if (!sessionManager) {
+            return;
+        }
+        [self _sendSingleAPIRequest:api withSessionManager:sessionManager];
+    });
 }
 
 - (void)_sendSingleAPIRequest:(DRDBaseAPI *)api withSessionManager:(AFHTTPSessionManager *)sessionManager {
@@ -330,6 +343,18 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
     id requestParams        = [self requestParamsWithAPI:api];
     NSString *hashKey       = [NSString stringWithFormat:@"%lu", (unsigned long)[api hash]];
     
+    if ([self.sessionTasksCache objectForKey:hashKey]) {
+        NSDictionary *userInfo = @{
+                                   NSLocalizedDescriptionKey : @"Request send too fast, please try again later"
+                                   };
+        NSError *cancelError = [NSError errorWithDomain:NSURLErrorDomain
+                                                   code:NSURLErrorCancelled
+                                               userInfo:userInfo];
+        [self callAPICompletion:api obj:nil error:cancelError];
+        return;
+    }
+
+    
     void (^successBlock)(NSURLSessionDataTask *task, id responseObject)
     = ^(NSURLSessionDataTask * task, id responseObject) {
         __strong typeof (weakSelf) strongSelf = weakSelf;
@@ -337,7 +362,7 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         }
         [strongSelf handleSuccWithResponse:responseObject andAPI:api];
-        [self.sessionTasksCache removeObjectForKey:hashKey];
+        [strongSelf.sessionTasksCache removeObjectForKey:hashKey];
         if (completionGroup) {
             dispatch_group_leave(completionGroup);
         }
@@ -350,7 +375,7 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         }
         [strongSelf handleFailureWithError:error andAPI:api];
-        [self.sessionTasksCache removeObjectForKey:hashKey];
+        [strongSelf.sessionTasksCache removeObjectForKey:hashKey];
         if (completionGroup) {
             dispatch_group_leave(completionGroup);
         }
@@ -365,7 +390,14 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
         api.apiProgressBlock(progress);
     } : nil;
     
-    [api apiRequestWillBeSent];
+    if ([[NSThread currentThread] isMainThread]) {
+        [api apiRequestWillBeSent];
+    } else {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [api apiRequestWillBeSent];
+        });
+    }
+    
     if (self.configuration.isNetworkingActivityIndicatorEnabled) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     }
@@ -446,19 +478,27 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
             break;
     }
     if (dataTask) {
-        [self.sessionTasksCache setObject:dataTask forKey:[NSString stringWithFormat:@"%lu", (unsigned long)[api hash]]];
+        [self.sessionTasksCache setObject:dataTask forKey:hashKey];
     }
-
-    [api apiRequestDidSent];
+    
+    if ([[NSThread currentThread] isMainThread]) {
+        [api apiRequestDidSent];
+    } else {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [api apiRequestDidSent];
+        });
+    }
 }
 
 - (void)cancelAPIRequest:(nonnull DRDBaseAPI *)api {
-    NSString *hashKey = [NSString stringWithFormat:@"%lu", (unsigned long)[api hash]];
-    NSURLSessionDataTask *dataTask = [self.sessionTasksCache objectForKey:hashKey];
-    [self.sessionTasksCache removeObjectForKey:hashKey];
-    if (dataTask) {
-        [dataTask cancel];
-    }
+    dispatch_async(drd_api_task_creation_queue(), ^{
+        NSString *hashKey = [NSString stringWithFormat:@"%lu", (unsigned long)[api hash]];
+        NSURLSessionDataTask *dataTask = [self.sessionTasksCache objectForKey:hashKey];
+        [self.sessionTasksCache removeObjectForKey:hashKey];
+        if (dataTask) {
+            [dataTask cancel];
+        }
+    });
 }
 
 @end
