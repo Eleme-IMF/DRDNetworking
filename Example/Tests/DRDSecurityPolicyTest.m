@@ -20,6 +20,11 @@
     XCTAssert(nonePolicy.allowInvalidCertificates == NO);
     XCTAssert(nonePolicy.validatesDomainName == YES);
     XCTAssert(nonePolicy.SSLPinningMode == DRDSSLPinningModeNone);
+    
+    nonePolicy.allowInvalidCertificates = YES;
+    XCTAssert(nonePolicy.allowInvalidCertificates == YES);
+    nonePolicy.validatesDomainName = NO;
+    XCTAssert(nonePolicy.validatesDomainName == NO);
 
     DRDSecurityPolicy *publicKeyPolicy = [DRDSecurityPolicy policyWithPinningMode:DRDSSLPinningModePublicKey];
     XCTAssert(publicKeyPolicy.allowInvalidCertificates == NO);

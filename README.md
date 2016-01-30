@@ -41,7 +41,7 @@ apiGet.baseUrl        = @"http://ele.me";
 
 ###### DRDAPIManager
 
-`DRDAPIManager` manages `DRDBaseAPI` object,  which conforms to `<DRDAPI>`protocol. You can send an API request or a batch of API requests. Furthermore, you can cancel an API request which you sent before.
+`DRDAPIManager` manages `DRDBaseAPI` object. You can send an API request or a batch of API requests. Furthermore, you can cancel an API request which you sent before.
 
 ###### DRDConfig  
 `DRDConfig` is a global class that help us to maintain the whole behaviors.  
@@ -155,14 +155,53 @@ Review it, and write your own protocol.
         }
     }];
     [plusAPI start];
-```
+```  
+  
+## 中文说明
+### 简介
+`DRDNetworking`提供了一个方便实现`API`调用的网络库。  
+目前，内部使用`AFNetworking 3.0.0+`来简化`JSON`、`XML`等网络序列化工作。  
+    
+它有以下优势:  
 
-## Requirements
-* iOS 7.0+  
-* Objective-C 2.0
-* AFNetworking 3.0.0+  
+1. 独立的网络层分工，易用且不断改进的`API`设计
+2. 支持`RESTFUL`, `JSON-RPC`及自定义`RPC`等通讯协议扩展
+3. 支持`HTTP /2`(`iOS 9.0+`)
+4. `HTTP 1.1`下，`TCP/IP` 连接复用，优化网络连接
+5. 提供`BaseAPI`，减少`ViewController`层的代码量
+  
+## 安装
+
+`DRDNetworking` 使用`Cocoapods`来进行集成 [CocoaPods](http://cocoapods.org).   
+在您的`Podfile`里添加以下代码即可集成`DRDNetworking`:  
+  
+```
+pod "DRDNetworking"
+```  
+
+### 示例项目  
+我们提供了一个示例项目来帮助您更好地了解和使用`DRDNetworking`。
+`clone`下来代码，`Scheme`选择 `DRDNetworking-Example`即可运行。
+
+### 快速开始
+* 在您的`podfile`中，添加`pod "DRDNetworking"`，然后 `pod update`
+* 在您需要使用`DRDNetworking`的地方，添加`#import "DRDNetworking.h"`
+* 以下的代码能够快速帮您开启一个网络`API`调用：  
+
+```
+DRDGeneralAPI *apiGet = [[DRDGeneralAPI alloc] init];
+apiGet.baseUrl        = @"http://ele.me";
+[apiGet setApiCompletionHandler:^(id responseObject, NSError * error) {
+    // Your handle code
+}];
+[apiGet start];
+ ```  
+更多用法，可以参考代码中`.h`文件。您是幸运的，目前所有文档都以中文撰写。
   
 ## ChangeLog
+### v0.5.1
+* Create APIs in one queue   
+
 ### v0.5.0  
 * Reuse one session for same base url requests to reuse TCP/IP connection
 * More convenience API design

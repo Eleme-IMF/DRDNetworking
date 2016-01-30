@@ -53,6 +53,6 @@ typedef NS_ENUM(NSUInteger, DRDSSLPinningMode) {
 
 // DRD 默认的请求超时时间
 #define DRD_API_REQUEST_TIME_OUT     15
-#define MAX_HTTP_CONNECTION_PER_HOST 2
+#define MAX_HTTP_CONNECTION_PER_HOST 5
 
 #endif /* DRDAPIDefines_h */

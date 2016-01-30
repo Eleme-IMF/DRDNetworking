@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 FOUNDATION_EXPORT NSString *DRDDefaultGeneralErrorString;
 
-@interface DRDConfig : NSObject
+@interface DRDConfig : NSObject<NSCopying>
 
 /**
  *  出现网络请求时，为了给用户比较好的用户体验，而使用的错误提示文字
