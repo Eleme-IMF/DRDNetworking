@@ -50,7 +50,7 @@ static DRDJsonRpcVersionTwo *sharedInstance = nil;
     return [dic copy];
 }
 
-- (id)rpcResponseObjReformer:(id)responseObject {
+- (id)rpcResponseObjReformer:(id)responseObject withAPI:(nonnull DRDBaseAPI *)api {
     NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
     [((NSDictionary *)responseObject) enumerateKeysAndObjectsWithOptions:NSEnumerationReverse
                                                               usingBlock:^(id key, id obj, BOOL * stop) {
@@ -67,12 +67,12 @@ static DRDJsonRpcVersionTwo *sharedInstance = nil;
 
 }
 
-- (id)rpcResultWithFormattedResponse:(id)formattedResponseObj {
+- (id)rpcResultWithFormattedResponse:(id)formattedResponseObj withAPI:(nonnull DRDBaseAPI *)api {
     return [((NSDictionary *)formattedResponseObj) objectForKey:@"result"];
 }
 
 // 如果需要对某些错误进行统一处理，可以在本方法中进行处理
-- (NSError *)rpcErrorWithFormattedResponse:(id)formattedResponseObj {
+- (NSError *)rpcErrorWithFormattedResponse:(id)formattedResponseObj withAPI:(nonnull DRDBaseAPI *)api {
     id errorInfo = [((NSDictionary *)formattedResponseObj) objectForKey:@"error"];
     if (errorInfo && ![errorInfo isEqual:[NSNull null]]) {
         return errorInfo;
