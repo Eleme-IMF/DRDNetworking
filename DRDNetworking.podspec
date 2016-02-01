@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name                = "DRDNetworking"
-    s.version             = "0.5.1"
+    s.version             = "0.5.2"
     s.summary             = "DRDNetworking is a networking sdk started by IMF."
     s.description         = <<-DESC
         Name story:

@@ -199,6 +199,9 @@ apiGet.baseUrl        = @"http://ele.me";
 更多用法，可以参考代码中`.h`文件。您是幸运的，目前所有文档都以中文撰写。
   
 ## ChangeLog
+### v0.5.2
+* RPC Delegate enables corresponding APIs.    
+
 ### v0.5.1
 * Create APIs in one queue   
 
