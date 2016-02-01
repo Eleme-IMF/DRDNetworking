@@ -227,13 +227,13 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
 #pragma mark - Response Handle
 - (void)handleSuccWithResponse:(id)responseObject andAPI:(DRDBaseAPI *)api {
     if (api.rpcDelegate) {
-        id formattedResponseObj = [api.rpcDelegate rpcResponseObjReformer:responseObject];
-        NSError *rpcError = [api.rpcDelegate rpcErrorWithFormattedResponse:formattedResponseObj];
+        id formattedResponseObj = [api.rpcDelegate rpcResponseObjReformer:responseObject withAPI:api];
+        NSError *rpcError = [api.rpcDelegate rpcErrorWithFormattedResponse:formattedResponseObj withAPI:api];
         if (rpcError) {
             [self callAPICompletion:api obj:nil error:rpcError];
             return;
         }
-        id rpcResult = [api.rpcDelegate rpcResultWithFormattedResponse:formattedResponseObj];
+        id rpcResult = [api.rpcDelegate rpcResultWithFormattedResponse:formattedResponseObj withAPI:api];
         [self callAPICompletion:api obj:rpcResult error:nil];
     } else {
         [self callAPICompletion:api obj:responseObject error:nil];
