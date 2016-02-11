@@ -172,7 +172,7 @@ Review it, and write your own protocol.
   
 ## 安装
 
-`DRDNetworking` 使用`Cocoapods`来进行集成 [CocoaPods](http://cocoapods.org).   
+`DRDNetworking` 使用`CocoaPods`来进行集成 [CocoaPods](http://cocoapods.org).   
 在您的`Podfile`里添加以下代码即可集成`DRDNetworking`:  
   
 ```
