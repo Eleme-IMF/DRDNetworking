@@ -28,8 +28,9 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 * Write api code to run a networking call:
 
 ```
-DRDGeneralAPI *apiGet = [[DRDGeneralAPI alloc] init];
-apiGet.baseUrl        = @"http://ele.me";
+DRDGeneralAPI *apiGet       = [[DRDGeneralAPI alloc] init];
+apiGet.baseUrl              = @"http://ele.me";
+apiGet.apiRequestMethodType = DRDRequestMethodTypeGET;
 [apiGet setApiCompletionHandler:^(id responseObject, NSError * error) {
     // Your handle code
 }];
@@ -172,7 +173,7 @@ Review it, and write your own protocol.
   
 ## 安装
 
-`DRDNetworking` 使用`CocoaPods`来进行集成 [CocoaPods](http://cocoapods.org).   
+您可以使用[CocoaPods](http://cocoapods.org)来集成`DRDNetworking`.   
 在您的`Podfile`里添加以下代码即可集成`DRDNetworking`:  
   
 ```
@@ -189,8 +190,9 @@ pod "DRDNetworking"
 * 以下的代码能够快速帮您开启一个网络`API`调用：  
 
 ```
-DRDGeneralAPI *apiGet = [[DRDGeneralAPI alloc] init];
-apiGet.baseUrl        = @"http://ele.me";
+DRDGeneralAPI *apiGet       = [[DRDGeneralAPI alloc] init];
+apiGet.baseUrl              = @"http://ele.me";
+apiGet.apiRequestMethodType = DRDRequestMethodTypeGET;
 [apiGet setApiCompletionHandler:^(id responseObject, NSError * error) {
     // Your handle code
 }];
