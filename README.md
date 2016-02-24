@@ -28,8 +28,9 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 * Write api code to run a networking call:
 
 ```
-DRDGeneralAPI *apiGet = [[DRDGeneralAPI alloc] init];
-apiGet.baseUrl        = @"http://ele.me";
+DRDGeneralAPI *apiGet       = [[DRDGeneralAPI alloc] init];
+apiGet.baseUrl              = @"http://ele.me";
+apiGet.apiRequestMethodType = DRDRequestMethodTypeGET;
 [apiGet setApiCompletionHandler:^(id responseObject, NSError * error) {
     // Your handle code
 }];
