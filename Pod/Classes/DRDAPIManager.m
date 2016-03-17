@@ -70,7 +70,6 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
 #pragma mark - Serializer
 - (AFHTTPRequestSerializer *)requestSerializerForAPI:(DRDBaseAPI *)api {
     NSParameterAssert(api);
-    __weak typeof(self) weakSelf = self;
     
     AFHTTPRequestSerializer *requestSerializer;
     if ([api apiRequestSerializerType] == DRDRequestSerializerTypeJSON) {
@@ -94,13 +93,6 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
         }];
     }
     
-    NSError *serializationError = nil;
-    if (serializationError) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [weakSelf handleFailureWithError:serializationError andAPI:api];
-        });
-        return nil;
-    }
     return requestSerializer;
 }
 
@@ -197,7 +189,6 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
         [self.sessionManagerCache setObject:sessionManager forKey:baseUrlStr];
     }
     
-//    AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
     sessionManager.requestSerializer     = requestSerializer;
     sessionManager.responseSerializer    = responseSerializer;
     sessionManager.securityPolicy        = [self securityPolicyWithAPI:api];
