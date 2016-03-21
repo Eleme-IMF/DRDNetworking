@@ -342,9 +342,11 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
                                                    code:NSURLErrorCancelled
                                                userInfo:userInfo];
         [self callAPICompletion:api obj:nil error:cancelError];
+        if (completionGroup) {
+            dispatch_group_leave(completionGroup);
+        }
         return;
     }
-
     
     void (^successBlock)(NSURLSessionDataTask *task, id responseObject)
     = ^(NSURLSessionDataTask * task, id responseObject) {
