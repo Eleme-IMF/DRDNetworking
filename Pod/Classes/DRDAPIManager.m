@@ -335,8 +335,9 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
     NSString *hashKey       = [NSString stringWithFormat:@"%lu", (unsigned long)[api hash]];
     
     if ([self.sessionTasksCache objectForKey:hashKey]) {
+        NSString *errorStr     = self.configuration.sendRequestTooFastErrorStr;
         NSDictionary *userInfo = @{
-                                   NSLocalizedDescriptionKey : @"Request send too fast, please try again later"
+                                   NSLocalizedDescriptionKey : errorStr
                                    };
         NSError *cancelError = [NSError errorWithDomain:NSURLErrorDomain
                                                    code:NSURLErrorCancelled

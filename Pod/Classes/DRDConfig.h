@@ -11,6 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 FOUNDATION_EXPORT NSString *DRDDefaultGeneralErrorString;
+FOUNDATION_EXPORT NSString *DRDDefaultSendRequestTooFastErrorString;
 
 @interface DRDConfig : NSObject<NSCopying>
 
@@ -19,6 +20,12 @@ FOUNDATION_EXPORT NSString *DRDDefaultGeneralErrorString;
  *  默认为：DRDDefaultGeneralErrorString
  */
 @property (nonatomic, copy) NSString *generalErrorTypeStr;
+
+/**
+ *  用户快速的多次发送同一个请求，使用的错误提示文字
+ *  默认为：DRDDefaultSendRequestTooFastErrorString
+ */
+@property (nonatomic, copy) NSString *sendRequestTooFastErrorStr;
 
 /**
  *  出现网络请求错误时，是否在请求错误的文字后加上(code)
