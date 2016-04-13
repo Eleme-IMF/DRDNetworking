@@ -1,3 +1,6 @@
+<p align="left" >
+  <img src="http://7qna7i.com1.z0.glb.clouddn.com/eleme.png" alt="DRDNetworking" title="DRDNetworking">
+</p>
 # DRDNetworking
 [![CI Status](http://img.shields.io/travis/Eleme-IMF/DRDNetworking.svg?style=flat)](https://travis-ci.org/Eleme-IMF/DRDNetworking)
 [![codecov.io](https://codecov.io/github/Eleme-IMF/DRDNetworking/coverage.svg?branch=master)](https://codecov.io/github/Eleme-IMF/DRDNetworking?branch=master)
@@ -16,7 +19,7 @@ More detail, please run the Example project in the repo.
 DRDNetworking is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
-```ruby
+```
 pod "DRDNetworking"
 ```
 ### Run Example
