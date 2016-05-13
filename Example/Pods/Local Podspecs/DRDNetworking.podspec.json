@@ -1,6 +1,6 @@
 {
   "name": "DRDNetworking",
-  "version": "0.5.0",
+  "version": "0.6.1",
   "summary": "DRDNetworking is a networking sdk started by IMF.",
   "description": "Name story:\nDurandal is the sword of Charlemagne's paladinRoland in the literary series known as the Matter of France.(From Wiki)\n\nOur Durandal:\nIt's a easy way to handle remote api call. Currently, in Durandal we are using AFNetworking Session Manager.",
   "homepage": "https://github.com/Eleme-IMF/DRDNetworking",
@@ -10,7 +10,7 @@
   },
   "source": {
     "git": "https://github.com/Eleme-IMF/DRDNetworking.git",
-    "tag": "0.5.0"
+    "tag": "0.6.1"
   },
   "platforms": {
     "ios": "7.0"

@@ -9,8 +9,29 @@
 #import "DRDBaseAPI.h"
 #import "DRDAPIDefines.h"
 
+@class DRDGeneralAPI;
 NS_ASSUME_NONNULL_BEGIN
-@interface DRDGeneralAPI : DRDBaseAPI 
+
+#pragma mark - DRDObjReformerProtocol
+@protocol DRDObjReformerProtocol
+/**
+ *  一般用来进行JSON -> Model 数据的转换工作
+ *   返回的id，如果没有error，则为转换成功后的Model数据；
+ *    如果有error， 则直接返回传参中的responseObject
+ *
+ *  @param api 当前的api
+ *  @param responseObject 请求的返回
+ *  @param error          请求的错误
+ *
+ *  @return 整理过后的请求数据
+ */
+- (nullable id)apiResponseObjReformerWithGeneralAPI:(nonnull DRDGeneralAPI *)api
+                                  andResponseObject:(nonnull id)responseObject
+                                           andError:(NSError * _Nullable)error;
+@end
+
+#pragma mark - DRDGeneralAPI
+@interface DRDGeneralAPI : DRDBaseAPI
 
 /**
  *  DRDAPI Protocol中的 requestMethod字段
@@ -72,16 +93,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy,   nullable) NSString     *customRequestUrl;
 
 /**
- *  同BaseAPI rpcDelegate
- */
-@property (nonatomic, weak,   nullable) id<DRDRPCProtocol> rpcDelegate;
-
-/**
- *  同BaseAPI apiHttpHeaderDelegate
- */
-@property (nonatomic, weak,   nullable) id<DRDHttpHeaderDelegate> apiHttpHeaderDelegate;
-
-/**
  *  同BaseAPI apiAddtionalRequestFunction
  */
 @property (nonatomic, copy,   nullable) NSString     *apiAddtionalRequestFunction;
@@ -111,6 +122,17 @@ NS_ASSUME_NONNULL_BEGIN
  *  @return 整理过后的请求数据
  */
 @property (nonatomic, copy, nullable) id _Nullable (^apiResponseObjReformerBlock)(id responseObject, NSError * _Nullable error);
+
+/**
+ *  进行JSON -> Model 数据的转换工作的Delegate
+ *   功能与apiResponseObjReformerBlock相同
+ *
+ *   提供该Delegate主要用于Reformer的不相关代码的解耦工作
+ *
+ *  注意：
+ *   如果apiResponseObjReformerBlock 同时设置，以本Delegate为主
+ */
+@property (nonatomic, weak, nullable) id<DRDObjReformerProtocol> objReformerDelegate;
 
 - (nullable instancetype)init;
 - (nullable instancetype)initWithRequestMethod:(NSString *)requestMethod;

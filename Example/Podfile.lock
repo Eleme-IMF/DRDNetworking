@@ -14,16 +14,30 @@ PODS:
   - AFNetworking/Serialization (3.0.4)
   - AFNetworking/UIKit (3.0.4):
     - AFNetworking/NSURLSession
-  - DRDNetworking (0.5.0):
+  - DRDNetworking (0.6.1):
     - AFNetworking (~> 3.0.0)
   - Expecta (1.0.5)
-  - OCMock (3.2.2)
+  - OCMock (3.3)
+  - OHHTTPStubs (5.0.0):
+    - OHHTTPStubs/Default (= 5.0.0)
+  - OHHTTPStubs/Core (5.0.0)
+  - OHHTTPStubs/Default (5.0.0):
+    - OHHTTPStubs/Core
+    - OHHTTPStubs/JSON
+    - OHHTTPStubs/NSURLSession
+    - OHHTTPStubs/OHPathHelpers
+  - OHHTTPStubs/JSON (5.0.0):
+    - OHHTTPStubs/Core
+  - OHHTTPStubs/NSURLSession (5.0.0):
+    - OHHTTPStubs/Core
+  - OHHTTPStubs/OHPathHelpers (5.0.0)
   - Specta (1.0.5)
 
 DEPENDENCIES:
   - DRDNetworking (from `../`)
   - Expecta
   - OCMock
+  - OHHTTPStubs
   - Specta
 
 EXTERNAL SOURCES:
@@ -32,9 +46,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AFNetworking: a0075feb321559dc78d9d85b55d11caa19eabb93
-  DRDNetworking: 3284be93e2abd3a37080d10294c43b5045603652
+  DRDNetworking: ad88142e046e1577a539210a562aafae04aea41a
   Expecta: e1c022fcd33910b6be89c291d2775b3fe27a89fe
-  OCMock: 18c9b7e67d4c2770e95bb77a9cc1ae0c91fe3835
+  OCMock: d68685bde31f69cb61d518dcb39269080c78b5ed
+  OHHTTPStubs: a5d2e9eea07869d42ec03338325f398bc520e159
   Specta: ac94d110b865115fe60ff2c6d7281053c6f8e8a2
 
 COCOAPODS: 0.39.0

@@ -7,9 +7,7 @@
 //
 
 #import "DRDAppDelegate.h"
-#import <DRDAPIManager.h>
-#import <DRDConfig.h>
-
+#import "DRDNetworking.h"
 
 @implementation DRDAppDelegate
 
