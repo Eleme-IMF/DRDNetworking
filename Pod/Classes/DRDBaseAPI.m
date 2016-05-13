@@ -34,14 +34,6 @@
     return nil;
 }
 
-- (nullable id<DRDRPCProtocol>)rpcDelegate {
-    return nil;
-}
-
-- (nullable id<DRDHttpHeaderDelegate>)apiHttpHeaderDelegate {
-    return nil;
-}
-
 - (nullable NSString *)requestMethod {
     return nil;
 }

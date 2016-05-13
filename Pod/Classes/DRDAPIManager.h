@@ -11,7 +11,7 @@
 @class DRDBaseAPI;
 @class DRDConfig;
 @class DRDAPIBatchAPIRequests;
-@protocol DRDAPI;
+@protocol DRDNetworkErrorObserverProtocol;
 
 @interface DRDAPIManager : NSObject
 
@@ -43,5 +43,19 @@
  *  @param apis 待发送的API请求集合
  */
 - (void)sendBatchAPIRequests:(nonnull DRDAPIBatchAPIRequests *)apis;
+
+/**
+ *  添加网络传输错误时的监控observer
+ *
+ *  @param observer 遵循DRDNetworkingErrorObserverProtocol的observer
+ */
+- (void)registerNetworkErrorObserver:(nonnull id<DRDNetworkErrorObserverProtocol>)observer;
+
+/**
+ *  删除网络传输错误时的监控observer
+ *
+ *  @param observer 遵循DRDNetworkingErrorObserverProtocol的observer
+ */
+- (void)removeNetworkErrorObserver:(nonnull id<DRDNetworkErrorObserverProtocol>)observer;
 
 @end

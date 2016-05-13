@@ -11,7 +11,6 @@
 
 @class DRDSecurityPolicy;
 @class DRDBaseAPI;
-@protocol DRDAPI;
 @protocol DRDRPCProtocol;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -81,18 +80,18 @@ NS_ASSUME_NONNULL_BEGIN
  *  api 上传、下载等长时间执行的Progress进度
  *  NSProgress: 进度
  */
-@property (nonatomic, copy, nullable) void (^apiProgressBlock)( NSProgress * _Nullable progress);
+@property (nonatomic, copy, nullable) void (^apiProgressBlock)(NSProgress * _Nullable progress);
 
 /**
  *  rpcDelegate
  *  用于实现上层JSON-RPC的delegate
  */
-- (nullable id<DRDRPCProtocol>)rpcDelegate;
+@property (nonatomic, weak, nullable) id<DRDRPCProtocol> rpcDelegate;
 
 /**
  *  HTTPHeader Field Delegate
  */
-- (nullable id<DRDHttpHeaderDelegate>)apiHttpHeaderDelegate;
+@property (nonatomic, weak, nullable) id<DRDHttpHeaderDelegate> apiHttpHeaderDelegate;
 
 /**
  *  主要用于JSON-RPC协议中的Method字段
