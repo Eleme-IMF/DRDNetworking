@@ -46,7 +46,8 @@
 }
 
 - (void)testSendBatchAPIRequests {
-    id afnSession  = OCMClassMock([AFHTTPSessionManager class]);
+    id afnSession  = OCMPartialMock([[AFHTTPSessionManager alloc]
+                                     initWithBaseURL:[NSURL URLWithString:@"http://ele.me"]]);
     id partialMock = OCMPartialMock([DRDAPIManager sharedDRDAPIManager]);
     OCMStub([partialMock sessionManagerWithAPI:[OCMArg any]]).andReturn(afnSession);
     
