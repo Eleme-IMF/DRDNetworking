@@ -1,0 +1,6 @@
+framework module DRDNetworking {
+  umbrella header "DRDNetworking-umbrella.h"
+
+  export *
+  module * { export * }
+}

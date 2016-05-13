@@ -15,7 +15,6 @@
 #import <Specta/Specta.h>
 #import <Expecta/Expecta.h>
 #import "OHHTTPStubs.h"
-#import <OHPathHelpers.h>
 
 @interface DRDAPIManager (UnitTesting)
 

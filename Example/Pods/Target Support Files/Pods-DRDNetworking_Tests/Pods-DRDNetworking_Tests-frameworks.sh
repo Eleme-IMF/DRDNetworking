@@ -82,3 +82,20 @@ strip_invalid_archs() {
   fi
 }
 
+
+if [[ "$CONFIGURATION" == "Debug" ]]; then
+  install_framework "Pods-DRDNetworking_Tests/AFNetworking.framework"
+  install_framework "Pods-DRDNetworking_Tests/DRDNetworking.framework"
+  install_framework "Pods-DRDNetworking_Tests/Expecta.framework"
+  install_framework "Pods-DRDNetworking_Tests/OCMock.framework"
+  install_framework "Pods-DRDNetworking_Tests/OHHTTPStubs.framework"
+  install_framework "Pods-DRDNetworking_Tests/Specta.framework"
+fi
+if [[ "$CONFIGURATION" == "Release" ]]; then
+  install_framework "Pods-DRDNetworking_Tests/AFNetworking.framework"
+  install_framework "Pods-DRDNetworking_Tests/DRDNetworking.framework"
+  install_framework "Pods-DRDNetworking_Tests/Expecta.framework"
+  install_framework "Pods-DRDNetworking_Tests/OCMock.framework"
+  install_framework "Pods-DRDNetworking_Tests/OHHTTPStubs.framework"
+  install_framework "Pods-DRDNetworking_Tests/Specta.framework"
+fi

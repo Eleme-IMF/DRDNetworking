@@ -14,8 +14,8 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6F9B45DD49F0F6F30F4A8A9A304AA053"
-               BuildableName = "libDRDNetworking.a"
+               BlueprintIdentifier = "800AD08B589AB8F59F71B469AA41DE8D"
+               BuildableName = "DRDNetworking.framework"
                BlueprintName = "DRDNetworking"
                ReferencedContainer = "container:Pods/Pods.xcodeproj">
             </BuildableReference>
@@ -56,8 +56,8 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6F9B45DD49F0F6F30F4A8A9A304AA053"
-            BuildableName = "libDRDNetworking.a"
+            BlueprintIdentifier = "800AD08B589AB8F59F71B469AA41DE8D"
+            BuildableName = "DRDNetworking.framework"
             BlueprintName = "DRDNetworking"
             ReferencedContainer = "container:Pods/Pods.xcodeproj">
          </BuildableReference>
@@ -74,8 +74,8 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6F9B45DD49F0F6F30F4A8A9A304AA053"
-            BuildableName = "libDRDNetworking.a"
+            BlueprintIdentifier = "800AD08B589AB8F59F71B469AA41DE8D"
+            BuildableName = "DRDNetworking.framework"
             BlueprintName = "DRDNetworking"
             ReferencedContainer = "container:Pods/Pods.xcodeproj">
          </BuildableReference>
