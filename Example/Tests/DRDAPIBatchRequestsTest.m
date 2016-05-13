@@ -7,13 +7,14 @@
 //
 
 #import "DRDTestCase.h"
-#import <DRDAPIBatchAPIRequests.h>
-#import <DRDGeneralAPI.h>
-#import <DRDAPIManager.h>
-#import <DRDConfig.h>
+#import "DRDAPIBatchAPIRequests.h"
+#import "DRDGeneralAPI.h"
+#import "DRDAPIManager.h"
+#import "DRDConfig.h"
 #import "AFNetworking.h"
 #import <Specta/Specta.h>
 #import <Expecta/Expecta.h>
+#import "OHHTTPStubs.h"
 
 @interface DRDAPIManager (UnitTesting)
 
@@ -95,27 +96,23 @@
 }
 
 - (void)testStart {
-    id afnSession  = OCMClassMock([AFHTTPSessionManager class]);
-    id partialMock = OCMPartialMock([DRDAPIManager sharedDRDAPIManager]);
-    OCMStub([partialMock sessionManagerWithAPI:[OCMArg any]]).andReturn(afnSession);
-
+    XCTestExpectation *expectation = [self expectationWithDescription:@"testStart"];
     DRDAPIBatchAPIRequests *apiBatchRequests = [[DRDAPIBatchAPIRequests alloc] init];
-
+    
     DRDGeneralAPI *generalAPI                = [[DRDGeneralAPI alloc] init];
+    generalAPI.requestMethod                 = @"get";
     generalAPI.baseUrl                       = self.baseURLStr;
     generalAPI.apiRequestMethodType          = DRDRequestMethodTypeGET;
+    [generalAPI setApiCompletionHandler:^(id obj, NSError * error) {
+        XCTAssert(error == nil);
+        [expectation fulfill];
+    }];
     
     [apiBatchRequests addAPIRequest:generalAPI];
-
+    
     [apiBatchRequests start];
     
-    OCMVerify([afnSession GET:[OCMArg any]
-                   parameters:[OCMArg any]
-                     progress:[OCMArg any]
-                      success:[OCMArg any]
-                      failure:[OCMArg any]]);
-    [partialMock stopMocking];
-    [afnSession stopMocking];
+    [self waitForExpectationsWithTimeout:normalTimeout handler:nil];
 }
 
 @end

@@ -7,9 +7,9 @@
 //
 
 #import "DRDTestCase.h"
-#import <DRDGeneralAPI.h>
-#import <DRDAPIManager.h>
-#import <DRDConfig.h>
+#import "DRDGeneralAPI.h"
+#import "DRDAPIManager.h"
+#import "DRDConfig.h"
 #import "AFURLRequestSerialization.h"
 #import <Specta/Specta.h>
 #import <Expecta/Expecta.h>

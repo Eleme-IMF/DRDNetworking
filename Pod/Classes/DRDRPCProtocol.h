@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 
 @class DRDBaseAPI;
-@protocol DRDAPI;
 
 NS_ASSUME_NONNULL_BEGIN
 @protocol DRDRPCProtocol <NSObject>

@@ -7,8 +7,8 @@
 //
 
 #import "DRDTestCase.h"
-#import <DRDGeneralAPI.h>
-#import <DRDAPIManager.h>
+#import "DRDGeneralAPI.h"
+#import "DRDAPIManager.h"
 
 NSString *eleUrl = @"http://www.ele.me/home/";
 

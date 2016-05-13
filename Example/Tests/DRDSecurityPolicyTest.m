@@ -7,7 +7,7 @@
 //
 
 #import "DRDTestCase.h"
-#import <DRDNetworking.h>
+#import "DRDNetworking.h"
 
 @interface DRDSecurityPolicyTest : DRDTestCase
 

@@ -14,6 +14,7 @@
 #import "DRDAPIBatchAPIRequests.h"
 #import <pthread.h>
 #import "DRDSecurityPolicy.h"
+#import "DRDNetworkErrorObserverProtocol.h"
 
 static dispatch_queue_t drd_api_task_creation_queue() {
     static dispatch_queue_t drd_api_task_creation_queue;
@@ -31,6 +32,7 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
 
 @property (nonatomic, strong) NSCache *sessionManagerCache;
 @property (nonatomic, strong) NSCache *sessionTasksCache;
+@property (nonatomic, strong) NSMutableSet<id<DRDNetworkErrorObserverProtocol>> *errorObservers;
 
 @end
 
@@ -49,6 +51,7 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
     if (!sharedDRDAPIManager) {
         sharedDRDAPIManager                    = [super init];
         sharedDRDAPIManager.configuration      = [[DRDConfig alloc]init];
+        sharedDRDAPIManager.errorObservers     = [[NSMutableSet alloc]init];
     }
     return sharedDRDAPIManager;
 }
@@ -232,6 +235,12 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
 }
 
 - (void)handleFailureWithError:(NSError *)error andAPI:(DRDBaseAPI *)api {
+    if (error) {
+        [self.errorObservers enumerateObjectsUsingBlock:^(id<DRDNetworkErrorObserverProtocol> observer, BOOL * _Nonnull stop) {
+            [observer networkErrorWithErrorInfo:error];
+        }];
+    }
+    
     // Error -999, representing API Cancelled
     if ([error.domain isEqualToString: NSURLErrorDomain] &&
         error.code == NSURLErrorCancelled) {
@@ -241,7 +250,7 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
     
     // Handle Networking Error
     NSString *errorTypeStr = self.configuration.generalErrorTypeStr;
-    NSMutableDictionary *tmpUserInfo = [[NSMutableDictionary alloc]initWithDictionary:error.userInfo copyItems:YES];
+    NSMutableDictionary *tmpUserInfo = [[NSMutableDictionary alloc]initWithDictionary:error.userInfo copyItems:NO];
     if (![[tmpUserInfo allKeys] containsObject:NSLocalizedFailureReasonErrorKey]) {
         [tmpUserInfo setValue: NSLocalizedString(errorTypeStr, nil) forKey:NSLocalizedFailureReasonErrorKey];
     }
@@ -335,16 +344,45 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
     NSString *hashKey       = [NSString stringWithFormat:@"%lu", (unsigned long)[api hash]];
     
     if ([self.sessionTasksCache objectForKey:hashKey]) {
+        NSString *errorStr     = self.configuration.frequentRequestErrorStr;
         NSDictionary *userInfo = @{
-                                   NSLocalizedDescriptionKey : @"Request send too fast, please try again later"
+                                   NSLocalizedDescriptionKey : errorStr
                                    };
         NSError *cancelError = [NSError errorWithDomain:NSURLErrorDomain
                                                    code:NSURLErrorCancelled
                                                userInfo:userInfo];
         [self callAPICompletion:api obj:nil error:cancelError];
+        if (completionGroup) {
+            dispatch_group_leave(completionGroup);
+        }
         return;
     }
-
+    
+    SCNetworkReachabilityRef hostReachable = SCNetworkReachabilityCreateWithName(NULL, [sessionManager.baseURL.host UTF8String]);
+    SCNetworkReachabilityFlags flags;
+    BOOL success = SCNetworkReachabilityGetFlags(hostReachable, &flags);
+    bool isReachable = success &&
+    (flags & kSCNetworkFlagsReachable) &&
+    !(flags & kSCNetworkFlagsConnectionRequired);
+    if (hostReachable) {
+        CFRelease(hostReachable);
+    }
+    if (!isReachable) {
+        // Not Reachable
+        NSString *errorStr     = self.configuration.networkNotReachableErrorStr;
+        NSDictionary *userInfo = @{
+                                   NSLocalizedDescriptionKey : errorStr,
+                                   NSLocalizedFailureReasonErrorKey : [NSString stringWithFormat:@"%@ unreachable", sessionManager.baseURL.host]
+                                   };
+        NSError *networkUnreachableError = [NSError errorWithDomain:NSURLErrorDomain
+                                                               code:NSURLErrorCannotConnectToHost
+                                                           userInfo:userInfo];
+        [self callAPICompletion:api obj:nil error:networkUnreachableError];
+        if (completionGroup) {
+            dispatch_group_leave(completionGroup);
+        }
+        return;
+    }
     
     void (^successBlock)(NSURLSessionDataTask *task, id responseObject)
     = ^(NSURLSessionDataTask * task, id responseObject) {
@@ -490,6 +528,18 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
             [dataTask cancel];
         }
     });
+}
+
+#pragma Network Error Observer -
+- (void)registerNetworkErrorObserver:(nonnull id<DRDNetworkErrorObserverProtocol>)observer {
+    [self.errorObservers addObject:observer];
+}
+
+
+- (void)removeNetworkErrorObserver:(nonnull id<DRDNetworkErrorObserverProtocol>)observer {
+    if ([self.errorObservers containsObject:observer]) {
+        [self.errorObservers removeObject:observer];
+    }
 }
 
 @end

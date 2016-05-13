@@ -1,5 +1,7 @@
 source 'https://github.com/CocoaPods/Specs.git'
 
+use_frameworks!
+
 target 'DRDNetworking_Example', :exclusive => true do
   pod 'DRDNetworking', :path => '../'
 end
@@ -10,4 +12,5 @@ target 'DRDNetworking_Tests', :exclusive => true do
   pod 'Specta'
   pod 'Expecta'
   pod 'OCMock'
+  pod 'OHHTTPStubs'
 end

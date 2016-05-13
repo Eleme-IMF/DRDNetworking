@@ -7,9 +7,9 @@
 //
 
 #import "DRDTestCase.h"
-#import <DRDGeneralAPI.h>
-#import <DRDAPIManager.h>
-#import <DRDConfig.h>
+#import "DRDGeneralAPI.h"
+#import "DRDAPIManager.h"
+#import "DRDConfig.h"
 
 @interface DRDAPIManager (UnitTesting)
 
@@ -92,6 +92,8 @@
     XCTAssert(newConfig.maxHttpConnectionPerHost == configuration.maxHttpConnectionPerHost);
     XCTAssert(newConfig.isErrorCodeDisplayEnabled == configuration.isErrorCodeDisplayEnabled);
     XCTAssert([newConfig.generalErrorTypeStr isEqualToString:configuration.generalErrorTypeStr]);
+    XCTAssert([newConfig.frequentRequestErrorStr isEqualToString:configuration.frequentRequestErrorStr]);
+    XCTAssert([newConfig.networkNotReachableErrorStr isEqualToString:configuration.networkNotReachableErrorStr]);
     XCTAssert(newConfig.isNetworkingActivityIndicatorEnabled == configuration.isNetworkingActivityIndicatorEnabled);
 }
 
