@@ -48,7 +48,7 @@
     }
 }
 
-- (nullable id)apiResponseObjReformer:(id)responseObject andError:(NSError * _Nullable)error {
+- (nullable id)apiResponseObjReformer:(id _Nullable)responseObject andError:(NSError * _Nullable)error {
     if (self.objReformerDelegate) {
         return [self.objReformerDelegate apiResponseObjReformerWithGeneralAPI:self
                                                             andResponseObject:responseObject

@@ -16,8 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol DRDObjReformerProtocol
 /**
  *  一般用来进行JSON -> Model 数据的转换工作
- *   返回的id，如果没有error，则为转换成功后的Model数据；
- *    如果有error， 则直接返回传参中的responseObject
+ *  返回的id，如果没有error且responseObject不为null，则为转换成功后的Model数据；
+ *  如果有error， 则直接返回传参中的responseObject
  *
  *  @param api 当前的api
  *  @param responseObject 请求的返回
@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @return 整理过后的请求数据
  */
 - (nullable id)apiResponseObjReformerWithGeneralAPI:(nonnull DRDGeneralAPI *)api
-                                  andResponseObject:(nonnull id)responseObject
+                                  andResponseObject:(id _Nullable)responseObject
                                            andError:(NSError * _Nullable)error;
 @end
 
@@ -121,7 +121,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @return 整理过后的请求数据
  */
-@property (nonatomic, copy, nullable) id _Nullable (^apiResponseObjReformerBlock)(id responseObject, NSError * _Nullable error);
+@property (nonatomic, copy, nullable) id _Nullable (^apiResponseObjReformerBlock)(id _Nullable responseObject, NSError * _Nullable error);
 
 /**
  *  进行JSON -> Model 数据的转换工作的Delegate

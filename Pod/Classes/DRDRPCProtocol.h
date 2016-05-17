@@ -38,7 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @return 解包后的json数据
  */
-- (nullable id)rpcResponseObjReformer:(id)responseObject withAPI:(DRDBaseAPI *)api;
+- (nullable id)rpcResponseObjReformer:(id _Nullable)responseObject withAPI:(DRDBaseAPI *)api;
 
 /**
  *  rpc拆包后的格式化后的result
@@ -47,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @return 格式化后的responseObj
  */
-- (nullable id)rpcResultWithFormattedResponse:(id)formattedResponseObj withAPI:(DRDBaseAPI *)api;
+- (nullable id)rpcResultWithFormattedResponse:(id _Nullable)formattedResponseObj withAPI:(DRDBaseAPI *)api;
 
 /**
  *  rpc 拆包后，服务器返回的错误信息
@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @return 格式化后的responseObj
  */
-- (NSError *)rpcErrorWithFormattedResponse:(id)formattedResponseObj withAPI:(DRDBaseAPI *)api;
+- (NSError *)rpcErrorWithFormattedResponse:(id _Nullable)formattedResponseObj withAPI:(DRDBaseAPI *)api;
 
 @end
 NS_ASSUME_NONNULL_END
