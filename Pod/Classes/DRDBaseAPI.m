@@ -76,6 +76,7 @@
     return [NSSet setWithObjects:
             @"text/json",
             @"text/html",
+            @"text/plain",
             @"application/json",
             @"text/javascript", nil];
 }
