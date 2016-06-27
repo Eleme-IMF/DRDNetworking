@@ -267,6 +267,13 @@ typedef void(^DRDAPICompletionHandler)(id _Nullable responseObject, NSError * _N
 - (void)start;
 
 /**
+ *  开启 API 请求，并配置请求完成回调
+ *
+ *  @param completionHandler 请求完成回调 block
+ */
+- (void)startWithCompletionHandler:(DRDAPICompletionHandler _Nullable)completionHandler;
+
+/**
  *  取消API 请求
  */
 - (void)cancel;

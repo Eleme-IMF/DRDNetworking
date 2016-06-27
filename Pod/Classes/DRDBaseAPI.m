@@ -106,6 +106,11 @@
     [[DRDAPIManager sharedDRDAPIManager] sendAPIRequest:((DRDBaseAPI *)self)];
 }
 
+- (void)startWithCompletionHandler:(DRDAPICompletionHandler)completionHandler {
+    self.apiCompletionHandler = completionHandler;
+    [self start];
+}
+
 - (void)cancel {
     [[DRDAPIManager sharedDRDAPIManager] cancelAPIRequest:((DRDBaseAPI *)self)];
 }
