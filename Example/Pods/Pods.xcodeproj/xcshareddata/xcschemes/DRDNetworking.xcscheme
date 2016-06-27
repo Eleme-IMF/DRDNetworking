@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'F2D8C1B05C8727951C89FEAC'
+               BlueprintIdentifier = '58968A468C8873A1B98C42FC'
                BlueprintName = 'DRDNetworking'
                ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'libDRDNetworking.a'>
+               BuildableName = 'DRDNetworking.framework'>
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

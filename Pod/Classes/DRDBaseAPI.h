@@ -74,7 +74,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  responseObject: api 返回的数据结构
  *  error:  api 返回的错误信息
  */
-@property (nonatomic, copy, nullable) void (^apiCompletionHandler)(_Nonnull id responseObject,  NSError * _Nullable error);
+@property (nonatomic, copy, nullable) void (^apiCompletionHandler)(id _Nullable responseObject,  NSError * _Nullable error);
 
 /**
  *  api 上传、下载等长时间执行的Progress进度
@@ -122,15 +122,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  *  一般用来进行JSON -> Model 数据的转换工作
- *   返回的id，如果没有error，则为转换成功后的Model数据；
- *    如果有error， 则直接返回传参中的responseObject
+ *  返回的id，如果没有error且responseObject不为null，则为转换成功后的Model数据；
+ *  如果有error， 则直接返回传参中的responseObject
  *
  *  @param responseObject 请求的返回
  *  @param error          请求的错误
  *
  *  @return 默认直接返回responseObject
  */
-- (nullable id)apiResponseObjReformer:(id)responseObject andError:(NSError * _Nullable)error;
+- (nullable id)apiResponseObjReformer:(id _Nullable)responseObject andError:(NSError * _Nullable)error;
 
 /**
  *  @descriptions

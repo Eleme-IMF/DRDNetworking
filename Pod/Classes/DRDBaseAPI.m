@@ -42,7 +42,7 @@
     return nil;
 }
 
-- (nullable id)apiResponseObjReformer:(id)responseObject andError:(NSError * _Nullable)error {
+- (nullable id)apiResponseObjReformer:(id _Nullable)responseObject andError:(NSError * _Nullable)error {
     return responseObject;
 }
 

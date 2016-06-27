@@ -1,12 +1,10 @@
-<p align="left" >
-  <img src="http://7qna7i.com1.z0.glb.clouddn.com/eleme.png" alt="DRDNetworking" title="DRDNetworking">
-</p>
 # DRDNetworking
 [![CI Status](http://img.shields.io/travis/Eleme-IMF/DRDNetworking.svg?style=flat)](https://travis-ci.org/Eleme-IMF/DRDNetworking)
 [![codecov.io](https://codecov.io/github/Eleme-IMF/DRDNetworking/coverage.svg?branch=master)](https://codecov.io/github/Eleme-IMF/DRDNetworking?branch=master)
 [![Version](https://img.shields.io/cocoapods/v/DRDNetworking.svg?style=flat)](http://cocoapods.org/pods/DRDNetworking)
 [![License](https://img.shields.io/cocoapods/l/DRDNetworking.svg?style=flat)](http://cocoapods.org/pods/DRDNetworking)
 [![Platform](https://img.shields.io/cocoapods/p/DRDNetworking.svg?style=flat)](http://cocoapods.org/pods/DRDNetworking)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
 DRDNetworking is a delightful networking library which provide you a convenient way to handle API request, it has no invasion to your project, you won't get into trouble when you remove it one day, even though that's not what I want to see. Currently, we are using AFNetworking 3.0.0+ with Session Manager.  
 DRDNetworking compatible with `RESTFUL API` and `JSON-RPC API`. If you needs to support with your own `JSON Based RPC Call`, just a few lines of code needed!  
@@ -204,6 +202,14 @@ apiGet.apiRequestMethodType = DRDRequestMethodTypeGET;
 更多用法，可以参考代码中`.h`文件。您是幸运的，目前所有文档都以中文撰写。
   
 ## ChangeLog
+### v0.6.1
+* Add ReformerDelegate for GeneralAPI
+* Add networking error observer
+* Remove useless code
+* Add networking reachability detection
+* Add customization frequest send error str
+* Fix bugs
+
 ### v0.5.2
 * RPC Delegate enables corresponding APIs.    
 
