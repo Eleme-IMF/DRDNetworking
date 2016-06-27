@@ -15,6 +15,14 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ *  请求完成回调 block 定义
+ *
+ *  @param responseObject api 返回的数据结构
+ *  @param error          api 返回的错误信息
+ */
+typedef void(^DRDAPICompletionHandler)(id _Nullable responseObject, NSError * _Nullable error);
+
 #pragma mark -
 @protocol DRDMultipartFormData
 
@@ -70,11 +78,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) void (^apiRequestConstructingBodyBlock)(id<DRDMultipartFormData> _Nonnull formData);
 
 /**
- *  api完成后的执行体
- *  responseObject: api 返回的数据结构
- *  error:  api 返回的错误信息
+ *  api 完成后的回调 block
  */
-@property (nonatomic, copy, nullable) void (^apiCompletionHandler)(id _Nullable responseObject,  NSError * _Nullable error);
+@property (nonatomic, copy, nullable) DRDAPICompletionHandler apiCompletionHandler;
 
 /**
  *  api 上传、下载等长时间执行的Progress进度
@@ -234,6 +240,14 @@ NS_ASSUME_NONNULL_BEGIN
  *  @return HTTPS证书验证策略
  */
 - (nonnull DRDSecurityPolicy *)apiSecurityPolicy;
+
+/**
+ *  ApiCompletionHandler
+ *  声明 setter 方法，方便 block 参数自动补全
+ *
+ *  @param apiCompletionHandler 请求完成回调 block
+ */
+- (void)setApiCompletionHandler:(DRDAPICompletionHandler _Nullable)apiCompletionHandler;
 
 #pragma mark - Process
 
