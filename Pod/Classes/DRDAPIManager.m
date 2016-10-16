@@ -311,6 +311,9 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
         if (apis.delegate) {
             [apis.delegate batchAPIRequestsDidFinished:apis];
         }
+        if ([apis apiCompletionHandler]) {
+            apis.apiCompletionHandler(apis);
+       }
     });
 }
 
