@@ -35,6 +35,12 @@
 @property (nonatomic, weak, nullable) id<DRDAPIBatchAPIRequestsProtocol> delegate;
 
 /**
+ *  Batch 完成后的执行体
+ *  batchApis batchApis
+ */
+@property (nonatomic, copy, nullable) void (^apiCompletionHandler)(DRDAPIBatchAPIRequests * _Nullable batchApis);
+
+/**
  *  将API 加入到BatchRequest Set 集合中
  *
  *  @param api
