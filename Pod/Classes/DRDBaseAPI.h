@@ -235,6 +235,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nonnull DRDSecurityPolicy *)apiSecurityPolicy;
 
+/**
+ *  API存储在DataTaskCache中的Key
+ */
+- (nonnull NSString *)apiRequestKey;
+
 #pragma mark - Process
 
 /**

@@ -286,10 +286,6 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
 #pragma mark - Send Batch Requests
 - (void)sendBatchAPIRequests:(nonnull DRDAPIBatchAPIRequests *)apis {
     NSParameterAssert(apis);
-    
-    NSAssert([[apis.apiRequestsSet valueForKeyPath:@"hash"] count] == [apis.apiRequestsSet count],
-             @"Should not have same API");
-    
     dispatch_group_t batch_api_group = dispatch_group_create();
     __weak typeof(self) weakSelf = self;
     [apis.apiRequestsSet enumerateObjectsUsingBlock:^(id api, BOOL * stop) {
@@ -341,9 +337,9 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
     __weak typeof(self) weakSelf = self;
     NSString *requestUrlStr = [self requestUrlStringWithAPI:api];
     id requestParams        = [self requestParamsWithAPI:api];
-    NSString *hashKey       = [NSString stringWithFormat:@"%lu", (unsigned long)[api hash]];
+    NSString *apiRequestKey = [api apiRequestKey];
     
-    if ([self.sessionTasksCache objectForKey:hashKey]) {
+    if ([self.sessionTasksCache objectForKey:apiRequestKey]) {
         NSString *errorStr     = self.configuration.frequentRequestErrorStr;
         NSDictionary *userInfo = @{
                                    NSLocalizedDescriptionKey : errorStr
@@ -391,7 +387,7 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         }
         [strongSelf handleSuccWithResponse:responseObject andAPI:api];
-        [strongSelf.sessionTasksCache removeObjectForKey:hashKey];
+        [strongSelf.sessionTasksCache removeObjectForKey:apiRequestKey];
         if (completionGroup) {
             dispatch_group_leave(completionGroup);
         }
@@ -404,7 +400,7 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         }
         [strongSelf handleFailureWithError:error andAPI:api];
-        [strongSelf.sessionTasksCache removeObjectForKey:hashKey];
+        [strongSelf.sessionTasksCache removeObjectForKey:apiRequestKey];
         if (completionGroup) {
             dispatch_group_leave(completionGroup);
         }
@@ -507,7 +503,7 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
             break;
     }
     if (dataTask) {
-        [self.sessionTasksCache setObject:dataTask forKey:hashKey];
+        [self.sessionTasksCache setObject:dataTask forKey:apiRequestKey];
     }
     
     if ([[NSThread currentThread] isMainThread]) {
@@ -521,9 +517,9 @@ static DRDAPIManager *sharedDRDAPIManager       = nil;
 
 - (void)cancelAPIRequest:(nonnull DRDBaseAPI *)api {
     dispatch_async(drd_api_task_creation_queue(), ^{
-        NSString *hashKey = [NSString stringWithFormat:@"%lu", (unsigned long)[api hash]];
-        NSURLSessionDataTask *dataTask = [self.sessionTasksCache objectForKey:hashKey];
-        [self.sessionTasksCache removeObjectForKey:hashKey];
+        NSString *apiRequestKey = [api apiRequestKey];
+        NSURLSessionDataTask *dataTask = [self.sessionTasksCache objectForKey:apiRequestKey];
+        [self.sessionTasksCache removeObjectForKey:apiRequestKey];
         if (dataTask) {
             [dataTask cancel];
         }
