@@ -110,14 +110,16 @@
     [[DRDAPIManager sharedDRDAPIManager] cancelAPIRequest:((DRDBaseAPI *)self)];
 }
 
-- (NSUInteger)hash {
-    NSMutableString *hashStr = [NSMutableString stringWithFormat:@"%@ %@ %@ %@",
-                                [self requestMethod], [self requestParameters], [self baseUrl], [self customRequestUrl]];
-    return [hashStr hash];
+- (NSString *)apiRequestKey {
+    return [NSString stringWithFormat:@"%@_%@_%@_%@",
+            [self requestMethod] ? : @"",
+            self.requestParameters ? : @"",
+            [self baseUrl] ? : @"",
+            [self customRequestUrl] ? : @""];
 }
 
 -(BOOL)isEqualToAPI:(DRDBaseAPI *)api {
-    return [self hash] == [api hash];
+    return [[self apiRequestKey] isEqualToString:[api apiRequestKey]];
 }
 
 - (BOOL)isEqual:(id)object {
